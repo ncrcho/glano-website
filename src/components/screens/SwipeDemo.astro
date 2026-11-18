@@ -1,0 +1,52 @@
+---
+/**
+ * Photo review deck — matches the Figma swipe screen (463:16730).
+ * Interaction lives in Stage.astro (shared with the video deck).
+ */
+import { Image } from 'astro:assets';
+import '../../styles/deck.css';
+import back from '../../assets/app/back.svg';
+import undo from '../../assets/app/undo.svg';
+import glyphTrash from '../../assets/app/glyph-trash.svg';
+import glyphKeep from '../../assets/app/glyph-keep.svg';
+import p1 from '../../assets/app/swipe-front.jpg';
+import p2 from '../../assets/app/swipe-back.jpg';
+import p3 from '../../assets/app/fan-3.jpg';
+import p4 from '../../assets/app/home-2.jpg';
+
+const cards = [
+	{ src: p1, name: 'IMG_2026_11_06.HEIC', meta: '5.1 Mb   •   4032 x 3024', date: 'Nov 06, 2026' },
+	{ src: p2, name: 'IMG_2026_11_06.HEIC', meta: '5.1 Mb   •   4032 x 3024', date: 'Nov 06, 2026' },
+	{ src: p3, name: 'IMG_2026_09_21.HEIC', meta: '3.8 Mb   •   3024 x 4032', date: 'Sep 21, 2026' },
+	{ src: p4, name: 'IMG_2026_08_14.HEIC', meta: '4.4 Mb   •   3024 x 4032', date: 'Aug 14, 2026' },
+];
+---
+
+<div class="scr" data-review-deck="photo" data-start="22">
+	<img class="a" src={back.src} alt="" style="--x:16;--y:81;--sw:12" />
+	<p class="a c" style="--y:77;--f:24">Duplicate</p>
+
+	<div class="a deck" style="--x:16;--y:133;--sw:370;--sh:641" data-deck>
+		{
+			cards.map((c, i) => (
+				<article class:list={['dcard', { 'is-first': i === 0 }]} data-card style={`--i:${i}`}>
+					<div class="dcard__media">
+						<Image src={c.src} alt="" widths={[370, 740]} sizes="370px" draggable="false" />
+						<img src={glyphTrash.src} alt="" class="glyph glyph--clear" />
+						<img src={glyphKeep.src} alt="" class="glyph glyph--keep" />
+					</div>
+					<p class="dcard__name">{c.name}</p>
+					<p class="dcard__meta">
+						<span>{c.meta}</span>
+						<span>{c.date}</span>
+					</p>
+				</article>
+			))
+		}
+	</div>
+
+	<button type="button" class="a deck-undo" style="--x:18;--y:803;--sw:52;--sh:46" data-undo aria-label="Undo">
+		<img src={undo.src} alt="" />
+	</button>
+	<p class="a c deck-count" style="--y:816;--f:18"><span data-count-now>22</span> of 98</p>
+</div>

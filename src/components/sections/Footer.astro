@@ -1,0 +1,108 @@
+---
+import AppStoreButton from '../ui/AppStoreButton.astro';
+import wordmark from '../../assets/app/wordmark.svg';
+import { SITE } from '../../config';
+
+interface Props {
+	/** Show the closing download section above the footer (home page only). */
+	showCta?: boolean;
+}
+const { showCta = true } = Astro.props;
+const year = new Date().getFullYear();
+const links = [
+	{ href: SITE.privacyUrl, label: 'Privacy Policy' },
+	{ href: SITE.termsUrl, label: 'Terms of Use' },
+	{ href: SITE.supportUrl, label: 'Support' },
+];
+---
+
+{
+	showCta && (
+		<section class="close" id="download" aria-labelledby="close-title">
+			<div class="container close__inner">
+				<h2 class="display close__title" id="close-title">Get your storage back.</h2>
+				<AppStoreButton />
+			</div>
+		</section>
+	)
+}
+
+<footer class="footer">
+	<div class="container footer__inner">
+		<img src={wordmark.src} alt="Glano" width="72" height="22" class="footer__logo" />
+		<nav aria-label="Legal and support">
+			<ul class="footer__links" role="list">
+				{
+					links.map((l) => (
+						<li>
+							<a href={l.href}>{l.label}</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+		<p class="footer__copy">© {year} Glano</p>
+	</div>
+</footer>
+
+<style>
+	.close {
+		padding-block: clamp(4rem, 3rem + 4vw, 7rem) clamp(5rem, 3rem + 6vw, 8rem);
+		border-top: 1px solid var(--line);
+		overflow: clip;
+	}
+
+	.close__inner {
+		display: grid;
+		justify-items: center;
+		gap: 2.25rem;
+		text-align: center;
+	}
+
+	.close__title {
+		max-width: 12ch;
+	}
+
+	.footer {
+		border-top: 1px solid var(--line);
+	}
+
+	.footer__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 1rem 2rem;
+		padding-block: 2rem;
+	}
+
+	.footer__logo {
+		width: 72px;
+		height: auto;
+	}
+
+	.footer__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 2rem;
+		font-size: 0.875rem;
+		color: var(--ink-2);
+	}
+
+	.footer__links a:hover {
+		color: var(--ink);
+	}
+
+	.footer__copy {
+		font-size: 0.875rem;
+		color: var(--ink-3);
+	}
+
+	@media (max-width: 640px) {
+		.footer__inner {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+</style>

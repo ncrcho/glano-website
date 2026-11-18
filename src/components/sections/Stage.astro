@@ -1,0 +1,771 @@
+---
+/**
+ * The Stage — one pinned phone, four chapters. The screen follows the chapter
+ * in view, and every screen is interactive.
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import HomeScreen from '../screens/HomeScreen.astro';
+import SwipeDemo from '../screens/SwipeDemo.astro';
+import VideoScreen from '../screens/VideoScreen.astro';
+import ReviewScreen from '../screens/ReviewScreen.astro';
+import { SHOW_PREVIEW_TAGS } from '../../config';
+
+const chapters = [
+	{ id: 'find', n: '01', name: 'Find' },
+	{ id: 'decide', n: '02', name: 'Decide' },
+	{ id: 'inspect', n: '03', name: 'Inspect' },
+	{ id: 'review', n: '04', name: 'Review' },
+];
+
+const categories = [
+	{ key: 'duplicates', name: 'Duplicates', note: 'Exact copies, matched instantly' },
+	{ key: 'screenshots', name: 'Screenshots', note: 'Receipts, memes, old tickets' },
+	{ key: 'similar', name: 'Similar photos', note: 'Bursts and near-identical shots' },
+	{ key: 'videos', name: 'Large videos', note: 'The biggest files, biggest first' },
+];
+---
+
+<section class="stage" id="how" aria-labelledby="stage-title" data-stage>
+	<div class="container">
+		<header class="stage__head">
+			<p class="label">How it works</p>
+			<h2 class="h2" id="stage-title">See it work. Right here.</h2>
+			<p class="lead">This is the Glano experience. Scroll through it, and try it as you go.</p>
+		</header>
+
+		<div class="stage__grid">
+			<nav class="rail" aria-label="Chapters">
+				<ol role="list">
+					{
+						chapters.map((c, i) => (
+							<li>
+								<a href={`#ch-${c.id}`} class:list={['rail__item', { 'is-active': i === 0 }]} data-rail={c.id}>
+									<span class="mono">{c.n}</span>
+									{c.name}
+								</a>
+							</li>
+						))
+					}
+				</ol>
+			</nav>
+
+			<div class="device" data-device>
+				<div class="device__glow" aria-hidden="true"></div>
+				<PhoneFrame label="Interactive Glano demo">
+					<div class="screens">
+						<div class="screen is-active" data-screen="find"><HomeScreen counts /></div>
+						<div class="screen" data-screen="decide"><SwipeDemo /></div>
+						<div class="screen" data-screen="inspect"><VideoScreen /></div>
+						<div class="screen" data-screen="review"><ReviewScreen /></div>
+					</div>
+				</PhoneFrame>
+			</div>
+
+			<div class="chapters">
+				<article class="chapter" id="ch-find" data-chapter="find">
+					<p class="chapter__n mono">01 · Find</p>
+					<h3 class="chapter__title">Find what's taking space.</h3>
+					<p class="chapter__body">
+						Glano scans your library on your iPhone and sorts the clutter into four groups, with counts and sizes, so
+						you know exactly where your storage went.
+					</p>
+					<ul class="cats" role="list">
+						{
+							categories.map((c) => (
+								<li>
+									<button type="button" class="cat" data-cat-btn={c.key}>
+										<span class="cat__name">
+											{c.name}
+										</span>
+										<span class="cat__note">{c.note}</span>
+									</button>
+								</li>
+							))
+						}
+					</ul>
+				</article>
+
+				<article class="chapter" id="ch-decide" data-chapter="decide">
+					<p class="chapter__n mono">02 · Decide</p>
+					<h3 class="chapter__title">One photo at a time. Your call.</h3>
+					<p class="chapter__body">
+						Swipe left to clear, right to keep. Every photo shows its file details, and Undo brings back the last one
+						in a tap.
+					</p>
+					<p class="hint mono">↔ Drag the photo left or right</p>
+				</article>
+
+				<article class="chapter" id="ch-inspect" data-chapter="inspect">
+					<p class="chapter__n mono">03 · Inspect</p>
+					<h3 class="chapter__title">Biggest videos first.</h3>
+					<p class="chapter__body">
+						Glano sorts your large videos from biggest to smallest. Preview each one, scrub through it, then swipe to
+						keep or clear.
+					</p>
+					<p class="hint mono">↔ Drag the timeline, then swipe the card</p>
+					{SHOW_PREVIEW_TAGS && <p class="preview-tag">Preview design · video review</p>}
+				</article>
+
+				<article class="chapter" id="ch-review" data-chapter="review">
+					<p class="chapter__n mono">04 · Review</p>
+					<h3 class="chapter__title">Nothing disappears by accident.</h3>
+					<p class="chapter__body">
+						Everything you clear is sorted into its category in Cleaned Items, with counts and sizes, so you can review
+						it before it's deleted for good.
+					</p>
+				</article>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.stage {
+		--P: min(320px, calc((100svh - 140px) * 0.46));
+		--top: max(84px, calc(50svh - var(--P) * 1.087));
+		padding-top: var(--section);
+		border-top: 1px solid var(--line);
+	}
+
+	.stage__head {
+		display: grid;
+		gap: 1rem;
+		max-width: 36rem;
+	}
+
+	.stage__grid {
+		display: grid;
+		grid-template-columns: 150px var(--P) minmax(0, 1fr);
+		column-gap: clamp(2.5rem, 5vw, 6rem);
+		margin-top: clamp(2rem, 4vw, 4rem);
+	}
+
+	/* --- Rail -------------------------------------------------------------- */
+	.rail {
+		position: sticky;
+		top: var(--top);
+		align-self: start;
+		padding-top: 1rem;
+	}
+
+	.rail ol {
+		display: grid;
+		gap: 0.25rem;
+		border-left: 1px solid var(--line);
+	}
+
+	.rail__item {
+		display: flex;
+		gap: 0.75rem;
+		margin-left: -1px;
+		padding: 0.5rem 0 0.5rem 1rem;
+		border-left: 1px solid transparent;
+		font-size: 0.9375rem;
+		color: var(--ink-3);
+		transition:
+			color 0.3s ease,
+			border-color 0.3s ease;
+	}
+
+	.rail__item .mono {
+		font-size: 0.75rem;
+		padding-top: 0.15rem;
+	}
+
+	.rail__item:hover {
+		color: var(--ink-2);
+	}
+
+	.rail__item.is-active {
+		color: var(--ink);
+		border-left-color: var(--ink);
+	}
+
+	/* --- Device ------------------------------------------------------------ */
+	.device {
+		position: sticky;
+		top: var(--top);
+		align-self: start;
+		z-index: 2;
+	}
+
+	.device :global(.phone) {
+		--w: var(--P);
+		position: relative;
+	}
+
+	.device__glow {
+		position: absolute;
+		inset: -12% -40%;
+		background: radial-gradient(closest-side, rgba(20, 18, 27, 0.06), transparent);
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	.screens {
+		position: absolute;
+		inset: 0;
+	}
+
+	.screen {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(10px);
+		pointer-events: none;
+		transition:
+			opacity 0.35s ease,
+			transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+			visibility 0s linear 0.45s;
+	}
+
+	/* Nested views may set visibility: visible, so hide them from input too. */
+	.screen:not(.is-active) :global(*) {
+		visibility: hidden !important;
+	}
+
+	.screen.is-active {
+		pointer-events: auto;
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		transition:
+			opacity 0.35s ease 0.05s,
+			transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s,
+			visibility 0s;
+	}
+
+	/* --- Chapters ---------------------------------------------------------- */
+	.chapter {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
+		min-height: 100svh;
+		max-width: 26rem;
+		padding-block: 4rem;
+		opacity: 0.3;
+		transition: opacity 0.5s ease;
+	}
+
+	.chapter.is-active {
+		opacity: 1;
+	}
+
+	.chapter__n {
+		font-size: 0.8125rem;
+		color: var(--ink-3);
+	}
+
+	.chapter__title {
+		margin-top: 0.85rem;
+		font-family: var(--font-head);
+		font-weight: 500;
+		font-size: clamp(1.75rem, 1.2rem + 1.4vw, 2.5rem);
+		line-height: 1.08;
+		letter-spacing: -0.025em;
+		text-wrap: balance;
+	}
+
+	.chapter__body {
+		margin-top: 1rem;
+		color: var(--ink-2);
+		text-wrap: pretty;
+	}
+
+	.hint {
+		margin-top: 1.5rem;
+		font-size: 0.8125rem;
+		color: var(--ink-3);
+	}
+
+	.chapter .preview-tag {
+		margin-top: 1rem;
+	}
+
+	.cats {
+		display: grid;
+		width: 100%;
+		margin-top: 1.75rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.cat {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		width: 100%;
+		padding: 0.85rem 0;
+		border: 0;
+		border-bottom: 1px solid var(--line);
+		background: none;
+		font: inherit;
+		color: var(--ink);
+		text-align: left;
+		cursor: default;
+		transition: padding 0.3s ease;
+	}
+
+	.cat:hover,
+	.cat:focus-visible,
+	.cat.is-hi {
+		padding-left: 0.5rem;
+	}
+
+	.cat__name {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-head);
+		font-weight: 500;
+		font-size: 1.0625rem;
+	}
+
+	.cat__note {
+		font-size: 0.875rem;
+		color: var(--ink-3);
+	}
+
+	.pro {
+		padding: 0.05rem 0.45rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		font-family: var(--font-ui);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		color: var(--ink-2);
+	}
+
+	/* --- Mobile: phone pinned on top, chapters scroll beneath -------------- */
+	@media (max-width: 900px) {
+		.stage {
+			--P: min(230px, calc((100svh - 64px - 300px) * 0.46));
+			--top: 64px;
+		}
+
+		.stage__grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.rail {
+			display: none;
+		}
+
+		.device {
+			display: flex;
+			justify-content: center;
+			padding: 0.75rem 0 1.5rem;
+			background: linear-gradient(var(--paper) 90%, rgba(255, 254, 251, 0));
+		}
+
+		.device__glow {
+			display: none;
+		}
+
+		.chapter {
+			min-height: 72svh;
+			max-width: none;
+			justify-content: flex-start;
+			padding-block: 1rem 3rem;
+		}
+
+		.cat__note {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const stage = document.querySelector<HTMLElement>('[data-stage]')!;
+	const device = stage.querySelector<HTMLElement>('[data-device]')!;
+	const chapters = Array.from(stage.querySelectorAll<HTMLElement>('[data-chapter]'));
+	const screens = Array.from(stage.querySelectorAll<HTMLElement>('[data-screen]'));
+	const rail = Array.from(stage.querySelectorAll<HTMLElement>('[data-rail]'));
+
+	/* ---------- Chapter tracking ---------- */
+	let active = 'find';
+	const setActive = (id: string) => {
+		if (id === active) return;
+		active = id;
+		screens.forEach((s) => s.classList.toggle('is-active', s.dataset.screen === id));
+		chapters.forEach((c) => c.classList.toggle('is-active', c.dataset.chapter === id));
+		rail.forEach((r) => r.classList.toggle('is-active', r.dataset.rail === id));
+		stage.dispatchEvent(new CustomEvent('chapter', { detail: id }));
+	};
+	chapters[0].classList.add('is-active');
+
+	let ticking = false;
+	const onScroll = () => {
+		if (ticking) return;
+		ticking = true;
+		requestAnimationFrame(() => {
+			ticking = false;
+			const mobile = innerWidth <= 900;
+			const line = mobile ? device.getBoundingClientRect().bottom + 40 : innerHeight * 0.55;
+			let current = chapters[0].dataset.chapter!;
+			for (const c of chapters) if (c.getBoundingClientRect().top < line) current = c.dataset.chapter!;
+			setActive(current);
+		});
+	};
+	addEventListener('scroll', onScroll, { passive: true });
+	addEventListener('resize', onScroll);
+	onScroll();
+
+	/* ---------- 01 Find: category highlight ---------- */
+	const rows = Array.from(stage.querySelectorAll<HTMLElement>('[data-screen="find"] [data-cat]'));
+	const catBtns = Array.from(stage.querySelectorAll<HTMLElement>('[data-cat-btn]'));
+	const highlight = (key: string | null) => {
+		rows.forEach((r) => r.classList.toggle('is-hi', r.dataset.cat === key));
+		catBtns.forEach((b) => b.classList.toggle('is-hi', b.dataset.catBtn === key));
+	};
+	let hovering = false;
+	catBtns.forEach((b) => {
+		const on = () => {
+			hovering = true;
+			highlight(b.dataset.catBtn!);
+		};
+		const off = () => {
+			hovering = false;
+			highlight(null);
+		};
+		b.addEventListener('mouseenter', on);
+		b.addEventListener('focus', on);
+		b.addEventListener('mouseleave', off);
+		b.addEventListener('blur', off);
+	});
+	// Gentle auto-cycle while the chapter is in view and nobody is hovering.
+	let cycle = 0;
+	setInterval(() => {
+		if (reduce || hovering || active !== 'find') return;
+		highlight(catBtns[cycle % catBtns.length].dataset.catBtn!);
+		cycle++;
+	}, 1800);
+
+	/* ---------- Shared review deck (02 Decide photos, 03 Inspect videos) ---------- */
+	type Deck = {
+		root: HTMLElement;
+		cards: HTMLElement[];
+		top: () => HTMLElement | undefined;
+		decide: (dir: -1 | 1) => void;
+		nudge: () => void;
+		onTop: (fn: (card: HTMLElement | undefined) => void) => void;
+	};
+
+	function createDeck(root: HTMLElement): Deck {
+		const deck = root.querySelector<HTMLElement>('[data-deck]')!;
+		const cards = Array.from(deck.querySelectorAll<HTMLElement>('[data-card]'));
+		const undoBtn = root.querySelector<HTMLButtonElement>('[data-undo]')!;
+		const countEl = root.querySelector<HTMLElement>('[data-count-now]')!;
+		const start = Number(root.dataset.start || 1);
+		const history: number[] = [];
+		const listeners: ((card: HTMLElement | undefined) => void)[] = [];
+		let index = 0;
+		let resetTimer = 0;
+		let hintTimers: number[] = [];
+
+		const layout = () => {
+			cards.forEach((c, i) => {
+				const pos = i - index;
+				c.classList.toggle('is-top', pos === 0);
+				c.classList.toggle('is-behind', pos > 1);
+				if (pos >= 0) c.classList.remove('is-gone');
+			});
+			countEl.textContent = String(start + Math.min(index, cards.length - 1));
+			undoBtn.disabled = history.length === 0;
+			listeners.forEach((fn) => fn(cards[index]));
+		};
+
+		const drag = (card: HTMLElement, dx: number, dy = 0) => {
+			const r = Math.max(-1, Math.min(1, dx / (deck.clientWidth * 0.5)));
+			card.style.setProperty('--dx', `${dx}px`);
+			card.style.setProperty('--dy', `${dy}px`);
+			card.style.setProperty('--rot', `${r * 10}deg`);
+			card.style.setProperty('--sl', String(Math.max(0, -r * 1.6)));
+			card.style.setProperty('--sr', String(Math.max(0, r * 1.6)));
+		};
+
+		const cancelNudge = () => {
+			if (!hintTimers.length) return;
+			hintTimers.forEach(clearTimeout);
+			hintTimers = [];
+			const card = cards[index];
+			if (card) {
+				card.style.transition = '';
+				drag(card, 0);
+			}
+		};
+
+		const decide = (dir: -1 | 1) => {
+			const card = cards[index];
+			if (!card) return;
+			cancelNudge();
+			card.classList.remove('is-drag');
+			drag(card, dir * deck.clientWidth * 1.5, -40);
+			card.classList.add('is-gone');
+			history.push(index);
+			index++;
+			layout();
+			if (index >= cards.length)
+				resetTimer = window.setTimeout(() => {
+					index = 0;
+					history.length = 0;
+					cards.forEach((c) => drag(c, 0));
+					layout();
+				}, 1200);
+		};
+
+		undoBtn.addEventListener('click', () => {
+			const last = history.pop();
+			if (last === undefined) return;
+			clearTimeout(resetTimer);
+			index = last;
+			cards[index].classList.remove('is-gone');
+			drag(cards[index], 0);
+			layout();
+		});
+
+		// Drag to swipe. Controls inside the card (play, timeline) are excluded.
+		let startX = 0;
+		let startY = 0;
+		let dragging: HTMLElement | null = null;
+		deck.addEventListener('pointerdown', (e) => {
+			const target = e.target as HTMLElement;
+			if (target.closest('[data-track], [data-play]')) return;
+			const card = target.closest<HTMLElement>('[data-card]');
+			if (!card?.classList.contains('is-top')) return;
+			cancelNudge();
+			dragging = card;
+			startX = e.clientX;
+			startY = e.clientY;
+			card.classList.add('is-drag');
+			card.setPointerCapture(e.pointerId);
+		});
+		deck.addEventListener('pointermove', (e) => {
+			if (dragging) drag(dragging, e.clientX - startX, (e.clientY - startY) * 0.2);
+		});
+		const endDrag = (e: PointerEvent) => {
+			if (!dragging) return;
+			const dx = e.clientX - startX;
+			const card = dragging;
+			dragging = null;
+			card.classList.remove('is-drag');
+			if (Math.abs(dx) > deck.clientWidth * 0.25) decide(dx < 0 ? -1 : 1);
+			else drag(card, 0);
+		};
+		deck.addEventListener('pointerup', endDrag);
+		deck.addEventListener('pointercancel', endDrag);
+
+		// One-time teaching nudge: left (clear), right (keep), back to rest.
+		const nudge = () => {
+			const card = cards[index];
+			if (!card || reduce) return;
+			const d = deck.clientWidth * 0.16;
+			card.style.transition = 'transform 0.65s cubic-bezier(0.45, 0, 0.25, 1)';
+			[
+				[450, -d],
+				[1150, d],
+				[1850, 0],
+			].forEach(([at, dx]) => hintTimers.push(window.setTimeout(() => drag(card, dx), at)));
+			hintTimers.push(
+				window.setTimeout(() => {
+					card.style.transition = '';
+					hintTimers = [];
+				}, 2550),
+			);
+		};
+
+		layout();
+		return {
+			root,
+			cards,
+			top: () => cards[index],
+			decide,
+			nudge,
+			onTop: (fn) => {
+				listeners.push(fn);
+				fn(cards[index]);
+			},
+		};
+	}
+
+	const photoDeck = createDeck(stage.querySelector<HTMLElement>('[data-review-deck="photo"]')!);
+	const videoDeck = createDeck(stage.querySelector<HTMLElement>('[data-review-deck="video"]')!);
+
+	addEventListener('keydown', (e) => {
+		if ((e.target as HTMLElement).closest('input, textarea, [role="slider"]')) return;
+		const d = active === 'decide' ? photoDeck : active === 'inspect' ? videoDeck : null;
+		if (!d) return;
+		if (e.key === 'ArrowLeft') d.decide(-1);
+		if (e.key === 'ArrowRight') d.decide(1);
+	});
+
+	/* ---------- 03 Inspect: video playback inside the top card ---------- */
+	const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+	const videoOf = (card?: HTMLElement) => card?.querySelector<HTMLVideoElement>('video') ?? null;
+	const durOf = (v: HTMLVideoElement) => (Number.isFinite(v.duration) && v.duration > 0 ? v.duration : 1);
+	const paint = (card: HTMLElement, p: number) => {
+		p = Math.min(1, Math.max(0, p));
+		card.style.setProperty('--p', p.toFixed(4));
+		const v = videoOf(card)!;
+		card.querySelector<HTMLElement>('[data-time]')!.textContent = fmt(p * durOf(v));
+		card.querySelector<HTMLElement>('[data-track]')!.setAttribute('aria-valuenow', String(Math.round(p * 100)));
+	};
+	const ensureSrc = (v: HTMLVideoElement) => {
+		if (!v.getAttribute('src')) {
+			v.src = v.dataset.src!;
+			v.preload = 'auto';
+		}
+	};
+	const playTop = () => {
+		const v = videoOf(videoDeck.top());
+		if (!v || reduce) return;
+		ensureSrc(v);
+		v.play().catch(() => {});
+	};
+
+	let scrubbing = false;
+	let raf = 0;
+	let videoHinted = false;
+	let hintRaf = 0;
+	videoDeck.cards.forEach((card) => {
+		const v = videoOf(card)!;
+		const frame = () => {
+			if (!scrubbing) paint(card, v.currentTime / durOf(v));
+			if (!v.paused) raf = requestAnimationFrame(frame);
+		};
+		v.addEventListener('play', () => {
+			card.classList.add('is-playing');
+			cancelAnimationFrame(raf);
+			raf = requestAnimationFrame(frame);
+		});
+		v.addEventListener('pause', () => card.classList.remove('is-playing'));
+		v.addEventListener('seeked', () => !scrubbing && paint(card, v.currentTime / durOf(v)));
+		card.querySelector('[data-play]')!.addEventListener('click', () => {
+			ensureSrc(v);
+			if (v.paused) v.play().catch(() => {});
+			else v.pause();
+		});
+
+		const track = card.querySelector<HTMLElement>('[data-track]')!;
+		let wasPlaying = false;
+		const seek = (p: number) => {
+			p = Math.min(1, Math.max(0, p));
+			paint(card, p);
+			const t = p * durOf(v);
+			if (scrubbing && 'fastSeek' in v) v.fastSeek(t);
+			else v.currentTime = t;
+		};
+		const fromPointer = (e: PointerEvent) => {
+			const r = track.getBoundingClientRect();
+			seek((e.clientX - r.left) / r.width);
+		};
+		track.addEventListener('pointerdown', (e) => {
+			cancelVideoHint();
+			ensureSrc(v);
+			scrubbing = true;
+			wasPlaying = !v.paused;
+			v.pause();
+			track.setPointerCapture(e.pointerId);
+			fromPointer(e);
+		});
+		track.addEventListener('pointermove', (e) => scrubbing && fromPointer(e));
+		const end = () => {
+			if (!scrubbing) return;
+			scrubbing = false;
+			v.currentTime = (Number(card.style.getPropertyValue('--p')) || 0) * durOf(v);
+			if (wasPlaying) v.play().catch(() => {});
+		};
+		track.addEventListener('pointerup', end);
+		track.addEventListener('pointercancel', end);
+		track.addEventListener('keydown', (e) => {
+			if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+			e.preventDefault();
+			ensureSrc(v);
+			seek((v.currentTime + (e.key === 'ArrowRight' ? 1 : -1)) / durOf(v));
+		});
+		(card as HTMLElement & { seek?: (p: number) => void }).seek = seek;
+	});
+
+	// Only the top card plays; everything underneath stays paused.
+	videoDeck.onTop((top) => {
+		videoDeck.cards.forEach((c) => c !== top && videoOf(c)?.pause());
+		if (top && active === 'inspect' && videoHinted) playTop();
+	});
+
+	// One-time timeline demo on the first visit: sweep forward, ease back, play.
+	function cancelVideoHint() {
+		if (!hintRaf) return;
+		cancelAnimationFrame(hintRaf);
+		hintRaf = 0;
+		videoDeck.cards.forEach((c) => c.classList.remove('is-hinting'));
+	}
+	const playVideoHint = () => {
+		videoHinted = true;
+		const card = videoDeck.top();
+		const v = videoOf(card);
+		if (!card || !v || reduce) return;
+		const seek = (card as HTMLElement & { seek: (p: number) => void }).seek;
+		const run = () => {
+			card.classList.add('is-hinting');
+			const keys = [
+				{ t: 0, p: 0 },
+				{ t: 1100, p: 0.55 },
+				{ t: 1900, p: 0.2 },
+			];
+			const t0 = performance.now();
+			const ease = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
+			const step = (now: number) => {
+				const el = now - t0;
+				if (el >= keys[2].t) {
+					hintRaf = 0;
+					card.classList.remove('is-hinting');
+					seek(keys[2].p);
+					if (active === 'inspect') playTop();
+					return;
+				}
+				const k = el < keys[1].t ? 0 : 1;
+				const a = keys[k];
+				const b = keys[k + 1];
+				seek(a.p + (b.p - a.p) * ease((el - a.t) / (b.t - a.t)));
+				hintRaf = requestAnimationFrame(step);
+			};
+			hintRaf = requestAnimationFrame(step);
+		};
+		ensureSrc(v);
+		if (v.readyState >= 1) run();
+		else v.addEventListener('loadedmetadata', run, { once: true });
+	};
+
+	// Start loading the first clip shortly before the chapter is reached.
+	new IntersectionObserver(
+		([entry], obs) => {
+			if (!entry.isIntersecting) return;
+			const v = videoOf(videoDeck.top());
+			if (v) {
+				ensureSrc(v);
+				v.load();
+			}
+			obs.disconnect();
+		},
+		{ rootMargin: '100% 0px' },
+	).observe(stage.querySelector('#ch-inspect')!);
+
+	let photoHinted = false;
+	stage.addEventListener('chapter', ((e: CustomEvent) => {
+		if (e.detail === 'decide' && !photoHinted) {
+			photoHinted = true;
+			photoDeck.nudge();
+		}
+		if (e.detail === 'inspect') {
+			if (!videoHinted) playVideoHint();
+			else playTop();
+		} else {
+			cancelVideoHint();
+			videoDeck.cards.forEach((c) => videoOf(c)?.pause());
+		}
+	}) as EventListener);
+
+</script>

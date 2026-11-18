@@ -1,0 +1,152 @@
+---
+/** Glano Home screen — rebuilt from Figma node 451:259 (Z5). */
+import { Image } from 'astro:assets';
+import wordmark from '../../assets/app/wordmark.svg';
+import trash from '../../assets/app/icon-trash.svg';
+import iDup from '../../assets/app/icon-duplicates.svg';
+import iShot from '../../assets/app/icon-screenshots.svg';
+import iSim from '../../assets/app/icon-similar.svg';
+import iVid from '../../assets/app/icon-videos.svg';
+import p1 from '../../assets/app/home-1.jpg';
+import p2 from '../../assets/app/home-2.jpg';
+import p3 from '../../assets/app/home-3.jpg';
+
+interface Props {
+	/** Show item counts on every row instead of the "Pro" labels. */
+	counts?: boolean;
+}
+const { counts = false } = Astro.props;
+
+const rows = [
+	{ key: 'duplicates', y: 337, name: 'Duplicates', size: '2.4 GB', badge: '184', c: 'var(--pink)', icon: iDup, iw: 25 },
+	{ key: 'screenshots', y: 431, name: 'Screenshots', size: '800 MB', badge: '120', c: 'var(--lime)', icon: iShot, iw: 24 },
+	{ key: 'similar', y: 525, name: 'Similar photos', size: '1.1 GB', badge: 'Pro', count: '96', c: 'var(--teal)', icon: iSim, iw: 28, pro: true },
+	{ key: 'videos', y: 619, name: 'Large videos', size: '2.2 GB', badge: 'Pro', count: '12', c: 'var(--purple)', icon: iVid, iw: 52, pro: true, full: true },
+];
+---
+
+<div class="scr home" aria-hidden="true">
+	<img class="a" src={wordmark.src} alt="" style="--x:24;--y:76;--sw:96.6" />
+	<span class="a trash" style="--x:338;--y:74;--sw:40;--sh:40"><img src={trash.src} alt="" /></span>
+
+	<Image class="a photo" src={p1} alt="" width={140} style="--x:117.9;--y:141.8;--sw:65;--sh:65;--rot:-30deg" />
+	<Image class="a photo" src={p2} alt="" width={140} style="--x:166;--y:134.3;--sw:65;--sh:65;--rot:15deg" />
+	<Image class="a photo" src={p3} alt="" width={140} style="--x:220.6;--y:139.2;--sw:65;--sh:65;--rot:-24deg" />
+
+	<p class="a c gb" style="--y:220;--f:36"><span data-count="33.2">33.2</span> GB</p>
+	<div class="a bar" style="--x:91;--y:279;--sw:220;--sh:8">
+		<span style="flex:79;background:var(--pink)"></span>
+		<span style="flex:26;background:var(--lime)"></span>
+		<span style="flex:36;background:var(--teal)"></span>
+		<span style="flex:72;background:var(--purple)"></span>
+	</div>
+	<p class="a c used" style="--y:298;--f:12">234 of 256 GB used</p>
+
+	{
+		rows.map((r) => (
+			<div class="a card row" data-cat={r.key} style={`--x:16;--y:${r.y};--sw:370;--sh:82;--c:${r.c}`}>
+				<span class:list={['tile', { full: r.full }]}>
+					<img src={r.icon.src} alt="" style={`width:calc(var(--u) * ${r.iw})`} />
+				</span>
+				<span class="meta">
+					<span class="name">{r.name}</span>
+					<span class="size">{r.size}</span>
+				</span>
+				<span class:list={['badge', { pro: r.pro && !counts }]}>{counts && r.count ? r.count : r.badge}</span>
+			</div>
+		))
+	}
+
+	<div class="a pill-btn" style="--x:24;--y:746;--sw:354;--sh:58;--f:17">Review All &amp; Clean</div>
+	<p class="a c ui rescan" style="--y:825;--f:14">Rescan Library</p>
+</div>
+
+<style>
+	.trash {
+		display: grid;
+		place-items: center;
+		border-radius: 50%;
+		background: rgba(20, 18, 27, 0.1);
+	}
+
+	.trash img {
+		width: calc(var(--u) * 16.5);
+	}
+
+	.bar {
+		display: flex;
+		gap: calc(var(--u) * 2);
+		border-radius: calc(var(--u) * 4);
+		overflow: hidden;
+	}
+
+	.used {
+		color: rgba(20, 18, 27, 0.6);
+	}
+
+	.row {
+		transition:
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.35s ease,
+			border-color 0.35s ease;
+		display: flex;
+		align-items: center;
+		gap: calc(var(--u) * 18);
+		padding: 0 calc(var(--u) * 20) 0 calc(var(--u) * 15);
+	}
+
+	.row.is-hi {
+		transform: scale(1.035);
+		border-color: rgba(20, 18, 27, 0.35);
+		box-shadow: 0 calc(var(--u) * 10) calc(var(--u) * 30) rgba(20, 18, 27, 0.12);
+	}
+
+	.tile {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: calc(var(--u) * 52);
+		height: calc(var(--u) * 52);
+		border-radius: calc(var(--u) * 9);
+		background: color-mix(in srgb, var(--c) 10%, transparent);
+	}
+
+	.tile.full {
+		background: none;
+	}
+
+	.meta {
+		display: grid;
+		gap: calc(var(--u) * 5);
+		flex: 1;
+	}
+
+	.name {
+		font-size: calc(var(--u) * 16);
+	}
+
+	.size {
+		font-size: calc(var(--u) * 14);
+		opacity: 0.3;
+	}
+
+	.badge {
+		display: grid;
+		place-items: center;
+		width: calc(var(--u) * 51);
+		height: calc(var(--u) * 24);
+		border-radius: calc(var(--u) * 12);
+		font-size: calc(var(--u) * 14);
+		color: var(--c);
+		background: color-mix(in srgb, var(--c) 10%, transparent);
+	}
+
+	.badge.pro {
+		color: #fff;
+		background: var(--c);
+	}
+
+	.rescan {
+		font-weight: 500;
+	}
+</style>

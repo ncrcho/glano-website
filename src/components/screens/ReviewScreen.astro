@@ -1,0 +1,133 @@
+---
+/**
+ * Cleaned Items / Recently Deleted — Figma node 463:16567.
+ * A static, visual-only overview of how cleared items are organized.
+ */
+import back from '../../assets/app/back.svg';
+import settings from '../../assets/app/settings.svg';
+import trashBig from '../../assets/app/trash-big.svg';
+import more from '../../assets/app/more.svg';
+import fPink from '../../assets/app/folder-pink.svg';
+import fLime from '../../assets/app/folder-lime.svg';
+import fTeal from '../../assets/app/folder-teal.svg';
+import fPurple from '../../assets/app/folder-purple.svg';
+
+const folders = [
+	{ x: 16, y: 323, name: 'Duplicate', count: 120, icon: fPink },
+	{ x: 209, y: 323, name: 'Screenshots', count: 60, icon: fLime },
+	{ x: 16, y: 457, name: 'Similar photos', count: 86, icon: fTeal },
+	{ x: 209, y: 457, name: 'Large videos', count: 25, icon: fPurple },
+];
+---
+
+<div class="scr review" aria-hidden="true">
+	<img class="a" src={back.src} alt="" style="--x:16;--y:80;--sw:12" />
+	<p class="a c" style="--y:77;--f:24">Cleaned Items</p>
+	<img class="a" src={settings.src} alt="" style="--x:359.6;--y:79;--sw:25.6" />
+
+	<div class="a summary" style="--x:16;--y:139;--sw:370;--sh:118">
+		<img src={trashBig.src} alt="" class="summary__icon" />
+		<div class="summary__text">
+			<p class="summary__big">You've cleaned up<br />10 GB</p>
+			<p class="summary__small">291 items cleaned</p>
+		</div>
+	</div>
+
+	<p class="a" style="--x:16;--y:279;--f:18">Recently deleted</p>
+
+	{
+		folders.map((fo) => (
+			<div class="a card folder" style={`--x:${fo.x};--y:${fo.y};--sw:177;--sh:118`}>
+				<span class="folder__top">
+					<img src={fo.icon.src} alt="" class="folder__icon" />
+					<img src={more.src} alt="" class="folder__more" />
+				</span>
+				<span class="folder__name">{fo.name}</span>
+				<span class="folder__meta">
+					<span>{fo.count} Items</span>
+					<span>2.5 GB</span>
+				</span>
+			</div>
+		))
+	}
+
+	<p class="a note" style="--x:66;--y:621;--sw:270;--f:16">
+		Cleared items move to Recently Deleted in Photos for up to 30 days. Empty it to free up space.
+	</p>
+</div>
+
+<style>
+	.review {
+		cursor: default;
+	}
+
+	.summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 calc(var(--u) * 26) 0 calc(var(--u) * 35);
+		border-radius: calc(var(--u) * 20);
+		background: var(--ink);
+		color: #fff;
+	}
+
+	.summary__icon {
+		width: calc(var(--u) * 59);
+	}
+
+	.summary__text {
+		text-align: right;
+	}
+
+	.summary__big {
+		font-size: calc(var(--u) * 22);
+		line-height: 1.53;
+	}
+
+	.summary__small {
+		margin-top: calc(var(--u) * 4);
+		font-size: calc(var(--u) * 14);
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.folder {
+		display: block;
+		padding: calc(var(--u) * 20) calc(var(--u) * 16) 0 calc(var(--u) * 18);
+	}
+
+	.folder__top {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+
+	.folder__icon {
+		width: calc(var(--u) * 45);
+	}
+
+	.folder__more {
+		width: calc(var(--u) * 3.5);
+		margin-top: calc(var(--u) * 7);
+	}
+
+	.folder__name {
+		display: block;
+		margin-top: calc(var(--u) * 12);
+		font-size: calc(var(--u) * 14);
+	}
+
+	.folder__meta {
+		display: flex;
+		justify-content: space-between;
+		margin-top: calc(var(--u) * 4);
+		font-size: calc(var(--u) * 10);
+		opacity: 0.5;
+	}
+
+	.note {
+		text-align: center;
+		font-weight: 400;
+		line-height: 1.6;
+		opacity: 0.3;
+	}
+</style>

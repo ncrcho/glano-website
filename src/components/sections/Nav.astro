@@ -1,0 +1,66 @@
+---
+import wordmark from '../../assets/app/wordmark.svg';
+---
+
+<header class="nav">
+	<nav class="container nav__inner" aria-label="Main">
+		<a href="/" class="nav__brand"><img src={wordmark.src} alt="Glano" width="80" height="24" /></a>
+		<div class="nav__right">
+			<a href="/#how" class="nav__link">How it works</a>
+			<a href="/#privacy" class="nav__link">Privacy</a>
+			<a href="/#download" class="btn">Download</a>
+		</div>
+	</nav>
+</header>
+
+<style>
+	.nav {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background: rgba(255, 254, 251, 0.86);
+		backdrop-filter: saturate(1.4) blur(16px);
+		-webkit-backdrop-filter: saturate(1.4) blur(16px);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.nav__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 64px;
+	}
+
+	.nav__brand img {
+		width: 80px;
+		height: auto;
+	}
+
+	.nav__right {
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.nav__link {
+		font-size: 0.9375rem;
+		color: var(--ink-2);
+		transition: color 0.2s ease;
+	}
+
+	.nav__link:hover {
+		color: var(--ink);
+	}
+
+	.nav .btn {
+		height: 2.375rem;
+		padding-inline: 1.1rem;
+		font-size: 0.875rem;
+	}
+
+	@media (max-width: 640px) {
+		.nav__link {
+			display: none;
+		}
+	}
+</style>

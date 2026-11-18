@@ -1,0 +1,90 @@
+---
+/**
+ * Minimal iPhone frame. The screen is a size container so app screens can be
+ * authored in design pixels via `--u` (1u = 1/402 of the screen width).
+ */
+interface Props {
+	class?: string;
+	label?: string;
+}
+const { class: className, label } = Astro.props;
+---
+
+<div class:list={['phone', className]} role={label ? 'img' : undefined} aria-label={label}>
+	<div class="phone__screen">
+		<div class="phone__status" aria-hidden="true">
+			<span>9:41</span>
+			<span class="phone__island"></span>
+			<span class="phone__icons">
+				<svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="5.5" width="3" height="6.5" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+				<svg viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".35"></rect><rect x="2" y="2" width="17" height="8" rx="2"></rect><rect x="23.5" y="4" width="1.5" height="4" rx=".75" opacity=".35"></rect></svg>
+			</span>
+		</div>
+		<slot />
+	</div>
+</div>
+
+<style>
+	.phone {
+		--w: 320px;
+		position: relative;
+		width: var(--w);
+		aspect-ratio: 402 / 874;
+		padding: calc(var(--w) * 0.03);
+		border-radius: calc(var(--w) * 0.16);
+		background: #1b1a20;
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+			0 50px 80px -50px rgba(20, 18, 27, 0.35);
+	}
+
+	.phone__screen {
+		--u: calc(100cqw / 402);
+		container-type: inline-size;
+		position: relative;
+		height: 100%;
+		overflow: hidden;
+		overflow: clip;
+		border-radius: calc(var(--w) * 0.132);
+		background: var(--paper);
+		isolation: isolate;
+	}
+
+	.phone__status {
+		position: absolute;
+		inset: 0 0 auto;
+		z-index: 5;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: calc(var(--u) * 54);
+		padding: calc(var(--u) * 6) calc(var(--u) * 32) 0 calc(var(--u) * 42);
+		font-family: var(--font-ui);
+		font-weight: 600;
+		font-size: calc(var(--u) * 16);
+		color: var(--ink);
+	}
+
+	.phone__island {
+		position: absolute;
+		left: 50%;
+		top: calc(var(--u) * 12);
+		width: calc(var(--u) * 120);
+		height: calc(var(--u) * 35);
+		border-radius: 999px;
+		background: #050408;
+		transform: translateX(-50%);
+	}
+
+	.phone__icons {
+		display: flex;
+		align-items: center;
+		gap: calc(var(--u) * 6);
+	}
+
+	.phone__icons svg {
+		width: auto;
+		height: calc(var(--u) * 12);
+		fill: currentColor;
+	}
+</style>

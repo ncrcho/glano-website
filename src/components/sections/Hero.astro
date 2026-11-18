@@ -1,0 +1,206 @@
+---
+/**
+ * Hero — headline, description and download button on the left; the Glano
+ * home screen on an iPhone on the right. On narrow screens they stack.
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import HomeScreen from '../screens/HomeScreen.astro';
+import AppStoreButton from '../ui/AppStoreButton.astro';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+	<div class="container hero__grid">
+		<div class="hero__copy">
+			<h1 class="display hero__title" id="hero-title">Your camera roll, simplified.</h1>
+			<p class="lead hero__lead">
+				Glano finds duplicates, screenshots, similar photos and large videos. You decide what goes, in a few easy
+				swipes.
+			</p>
+			<div class="hero__cta">
+				<AppStoreButton />
+				<p class="hero__note">
+					<span class="dot" aria-hidden="true"></span>
+					100% on-device. Nothing is uploaded.
+				</p>
+			</div>
+		</div>
+
+		<div class="hero__phone">
+			<PhoneFrame label="Glano home screen showing 33.2 GB found across duplicates, screenshots, similar photos and large videos">
+				<HomeScreen counts />
+			</PhoneFrame>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		--P: clamp(272px, 24vw, 330px);
+		padding-block: clamp(3rem, 1.5rem + 4vw, 5.5rem) clamp(4.5rem, 2rem + 6vw, 7.5rem);
+		overflow: clip;
+	}
+
+	.hero__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		align-items: center;
+		column-gap: clamp(2.5rem, 6vw, 6rem);
+	}
+
+	/* --- Copy ------------------------------------------------------------- */
+	.hero__copy {
+		position: relative;
+		z-index: 1;
+		max-width: 36rem;
+	}
+
+	.hero__title {
+		font-size: clamp(2.75rem, 1.1rem + 4.4vw, 5.5rem);
+		line-height: 0.98;
+		max-width: 10ch;
+	}
+
+	.hero__lead {
+		max-width: 28rem;
+		margin-top: clamp(1.25rem, 0.75rem + 1vw, 1.75rem);
+	}
+
+	.hero__cta {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1rem 1.5rem;
+		margin-top: clamp(2rem, 1.5rem + 1vw, 2.5rem);
+	}
+
+	/* A slightly wider, more prominent button than elsewhere on the page. */
+	.hero__cta :global(.appstore) {
+		justify-content: center;
+		min-width: 14rem;
+		height: 4rem;
+		padding-inline: 2.25rem;
+		box-shadow: 0 14px 28px -16px rgba(20, 18, 27, 0.55);
+	}
+
+	.hero__note {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		color: var(--ink-2);
+	}
+
+	.dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: #2fbf71;
+		box-shadow: 0 0 0 4px rgba(47, 191, 113, 0.15);
+	}
+
+	/* --- Phone ------------------------------------------------------------ */
+	.hero__phone {
+		display: flex;
+		justify-content: center;
+		animation: rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.hero__phone :global(.phone) {
+		--w: var(--P);
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+			0 2px 4px rgba(20, 18, 27, 0.08),
+			0 30px 60px -30px rgba(20, 18, 27, 0.35),
+			0 70px 110px -60px rgba(20, 18, 27, 0.45);
+	}
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translateY(40px);
+		}
+	}
+
+	/* --- Responsive ------------------------------------------------------- */
+
+	/* Laptop screens only: the phone is centred under the nav links
+	   (How it works · Privacy · Download). The exact offset is measured in the
+	   script below; right-aligning is the no-JS fallback. The grid's
+	   align-items: center keeps it vertically centred on the left content. */
+	@media (min-width: 1024px) and (max-width: 1919px) {
+		.hero__phone {
+			justify-content: flex-end;
+		}
+
+		.hero__phone :global(.phone) {
+			translate: var(--nav-shift, 0px) 0;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.hero {
+			--P: min(270px, 68vw);
+		}
+
+		.hero__grid {
+			grid-template-columns: minmax(0, 1fr);
+			row-gap: 3.5rem;
+			justify-items: center;
+			text-align: center;
+		}
+
+		.hero__copy {
+			display: grid;
+			justify-items: center;
+		}
+
+		.hero__title {
+			max-width: 11ch;
+		}
+
+		.hero__cta {
+			flex-direction: column;
+			justify-content: center;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero__phone {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	// Laptop widths: centre the phone under the nav links group.
+	const laptop = matchMedia('(min-width: 1024px) and (max-width: 1919px)');
+	const heroPhone = document.querySelector<HTMLElement>('.hero__phone');
+	const phoneEl = heroPhone?.querySelector<HTMLElement>('.phone');
+	const navGroup = document.querySelector<HTMLElement>('.nav__right');
+	const alignPhone = () => {
+		if (!heroPhone || !phoneEl || !navGroup) return;
+		heroPhone.style.removeProperty('--nav-shift');
+		if (!laptop.matches) return;
+		const n = navGroup.getBoundingClientRect();
+		const p = phoneEl.getBoundingClientRect();
+		const shift = n.left + n.width / 2 - (p.left + p.width / 2);
+		heroPhone.style.setProperty('--nav-shift', `${Math.round(shift)}px`);
+	};
+	alignPhone();
+	addEventListener('resize', alignPhone);
+	document.fonts?.ready.then(alignPhone);
+
+	// Count the found storage up once on load.
+	const count = document.querySelector<HTMLElement>('.hero [data-count]');
+	if (count && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		const target = Number(count.dataset.count);
+		const start = performance.now() + 500;
+		const tick = (now: number) => {
+			const t = Math.min(1, Math.max(0, (now - start) / 1400));
+			count.textContent = (target * (1 - Math.pow(1 - t, 3))).toFixed(1);
+			if (t < 1) requestAnimationFrame(tick);
+		};
+		count.textContent = '0.0';
+		requestAnimationFrame(tick);
+	}
+</script>

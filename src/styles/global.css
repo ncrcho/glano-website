@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Glano — design tokens & base styles
+   Source of truth: redesigned app in Figma (monochrome ink on warm white).
+   ========================================================================== */
+
+:root {
+	color-scheme: light;
+
+	/* Color — one ink, one paper. Category accents live only inside the app UI. */
+	--paper: #fffefb;
+	--surface: #ffffff;
+	--ink: #14121b;
+	--ink-2: rgba(20, 18, 27, 0.62);
+	--ink-3: rgba(20, 18, 27, 0.42);
+	--line: rgba(20, 18, 27, 0.1);
+
+	--pink: #ff3d7a;
+	--lime: #83c716;
+	--teal: #00cbbd;
+	--purple: #9b44ff;
+
+	/* Type */
+	--font-head: var(--font-display), 'Clash Grotesk', system-ui, sans-serif;
+	--font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro', 'Segoe UI', system-ui, sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+	--fs-display: clamp(3rem, 1.2rem + 5.2vw, 6.25rem);
+	--fs-h2: clamp(2.125rem, 1.3rem + 2.6vw, 3.75rem);
+	--fs-h3: 1.375rem;
+	--fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+
+	/* Space & shape */
+	--gutter: clamp(1.25rem, 0.6rem + 2.6vw, 2.5rem);
+	--max: 1160px;
+	--section: clamp(5rem, 3rem + 6vw, 9rem);
+	--radius: 20px;
+}
+
+/* --- Reset ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	scroll-behavior: smooth;
+	scroll-padding-top: 80px;
+	overflow-x: clip;
+}
+
+body {
+	margin: 0;
+	background: var(--paper);
+	color: var(--ink);
+	font-family: var(--font-ui);
+	font-size: 1.0625rem;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+img {
+	height: auto;
+}
+
+h1,
+h2,
+h3,
+p,
+figure,
+ul,
+ol {
+	margin: 0;
+}
+
+ul[role='list'],
+ol[role='list'] {
+	list-style: none;
+	padding: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 6px;
+}
+
+::selection {
+	background: var(--ink);
+	color: var(--paper);
+}
+
+/* --- Typography -------------------------------------------------------- */
+.display,
+.h2,
+.h3 {
+	font-family: var(--font-head);
+	font-weight: 500;
+	text-wrap: balance;
+}
+
+.display {
+	font-size: var(--fs-display);
+	line-height: 1;
+	letter-spacing: -0.035em;
+}
+
+.h2 {
+	font-size: var(--fs-h2);
+	line-height: 1.05;
+	letter-spacing: -0.03em;
+}
+
+.h3 {
+	font-size: var(--fs-h3);
+	line-height: 1.2;
+	letter-spacing: -0.015em;
+}
+
+.lead {
+	font-size: var(--fs-lead);
+	line-height: 1.55;
+	color: var(--ink-2);
+	text-wrap: pretty;
+}
+
+.label {
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--ink-3);
+}
+
+/* --- Layout ------------------------------------------------------------ */
+.container {
+	width: 100%;
+	max-width: calc(var(--max) + var(--gutter) * 2);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+.section {
+	padding-block: var(--section);
+}
+
+/* --- Buttons ----------------------------------------------------------- */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	height: 2.75rem;
+	padding-inline: 1.25rem;
+	border-radius: 999px;
+	background: var(--ink);
+	color: #fff;
+	font-family: var(--font-ui);
+	font-weight: 600;
+	font-size: 0.9375rem;
+	white-space: nowrap;
+	transition: opacity 0.2s ease;
+}
+
+.btn:hover {
+	opacity: 0.85;
+}
+
+/* Marks proposed UI that is not yet in the Figma app design. */
+.preview-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	height: 1.5rem;
+	padding: 0 0.6rem;
+	border: 1px dashed var(--ink-3);
+	border-radius: 999px;
+	font-family: var(--font-mono);
+	font-size: 0.6875rem;
+	letter-spacing: 0.02em;
+	color: var(--ink-2);
+	white-space: nowrap;
+}
+
+.mono {
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* --- App screen utilities ----------------------------------------------
+   Inside .phone__screen, --u = 1 Figma pixel. Elements are placed in design
+   pixels with unitless custom properties, e.g. style="--x:16;--y:80;--f:24".
+   ----------------------------------------------------------------------- */
+.scr {
+	position: absolute;
+	inset: 0;
+	font-family: var(--font-head);
+	font-weight: 500;
+	color: var(--ink);
+	line-height: 1.2;
+	text-align: left;
+}
+
+.scr .a {
+	position: absolute;
+	left: calc(var(--u) * var(--x, 0));
+	top: calc(var(--u) * var(--y, 0));
+	width: calc(var(--u) * var(--sw));
+	height: calc(var(--u) * var(--sh));
+	font-size: calc(var(--u) * var(--f, 16));
+	margin: 0;
+}
+
+.scr .c {
+	left: 0;
+	right: 0;
+	text-align: center;
+}
+
+.scr .r {
+	left: auto;
+	right: calc(var(--u) * var(--rx, 0));
+	text-align: right;
+}
+
+.scr .ui {
+	font-family: var(--font-ui);
+	font-weight: 600;
+}
+
+.scr .card {
+	background: #fffeff;
+	border: 0.4px solid rgba(0, 0, 0, 0.1);
+	border-radius: calc(var(--u) * 21);
+	box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 15) rgba(0, 0, 0, 0.05);
+}
+
+.scr .pill-btn {
+	display: grid;
+	place-items: center;
+	border-radius: 999px;
+	background: var(--ink);
+	color: #fff;
+	font-family: var(--font-ui);
+	font-weight: 600;
+}
+
+.scr .photo {
+	object-fit: cover;
+	border: calc(var(--u) * 1.2) solid #fff;
+	border-radius: calc(var(--u) * 16);
+	box-shadow: calc(var(--u) * -2) calc(var(--u) * 2) calc(var(--u) * 4) rgba(0, 0, 0, 0.29);
+	transform: rotate(var(--rot, 0deg));
+}

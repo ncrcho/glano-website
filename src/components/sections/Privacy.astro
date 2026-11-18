@@ -1,0 +1,227 @@
+---
+/**
+ * Privacy — one strong mark (a shield) and three plain promises.
+ */
+const points = [
+	{ title: 'On-device processing', body: 'Every scan runs on your iPhone’s own chip.' },
+	{ title: 'Zero cloud uploads', body: 'Your photos and videos never leave your device.' },
+	{ title: 'You stay in control', body: 'Nothing is deleted for good until you confirm.' },
+];
+---
+
+<section class="privacy" id="privacy" aria-labelledby="privacy-title">
+	<div class="container privacy__inner">
+		<div class="mark" data-mark aria-hidden="true">
+			<span class="ring r1"></span>
+			<span class="ring r2"></span>
+			<span class="ring r3"></span>
+			<svg class="shield" viewBox="0 0 96 112">
+				<path class="shield__body" d="M48 4l38 15v28c0 27-16 49-38 61C26 96 10 74 10 47V19L48 4z"></path>
+				<path class="shield__check" d="M31 57l12 12 23-25" pathLength="1"></path>
+			</svg>
+		</div>
+
+		<p class="label label--light">Privacy</p>
+		<h2 class="h2" id="privacy-title">Everything stays on your iPhone.</h2>
+		<p class="lead">
+			Glano does all of its work on your device. Your photos and videos are never uploaded to a server, so your
+			library stays yours.
+		</p>
+
+		<ul class="points" role="list">
+			{
+				points.map((p) => (
+					<li class="point">
+						<h3 class="point__title">{p.title}</h3>
+						<p class="point__body">{p.body}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.privacy {
+		padding-block: var(--section);
+		background: var(--ink);
+		color: #fff;
+		overflow: clip;
+	}
+
+	.privacy__inner {
+		display: grid;
+		justify-items: center;
+		text-align: center;
+	}
+
+	/* --- The mark ---------------------------------------------------------- */
+	.mark {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 220px;
+		height: 220px;
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
+
+	.mark::before {
+		/* soft light behind the shield */
+		content: '';
+		position: absolute;
+		inset: 10%;
+		border-radius: 50%;
+		background: radial-gradient(closest-side, rgba(47, 191, 113, 0.22), transparent);
+	}
+
+	.ring {
+		position: absolute;
+		inset: 18%;
+		border-radius: 50%;
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		animation: ripple 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+		opacity: 0;
+	}
+
+	.r2 {
+		animation-delay: 2s;
+	}
+
+	.r3 {
+		animation-delay: 4s;
+	}
+
+	@keyframes ripple {
+		0% {
+			transform: scale(0.8);
+			opacity: 0;
+		}
+		20% {
+			opacity: 1;
+		}
+		100% {
+			transform: scale(1.6);
+			opacity: 0;
+		}
+	}
+
+	.shield {
+		position: relative;
+		width: 96px;
+		height: 112px;
+		overflow: visible;
+		animation: breathe 6s ease-in-out infinite;
+	}
+
+	@keyframes breathe {
+		50% {
+			transform: translateY(-3px);
+		}
+	}
+
+	.shield__body {
+		fill: rgba(255, 255, 255, 0.06);
+		stroke: rgba(255, 255, 255, 0.85);
+		stroke-width: 1.5;
+		stroke-linejoin: round;
+	}
+
+	.shield__check {
+		fill: none;
+		stroke: #2fbf71;
+		stroke-width: 5;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-dasharray: 1;
+		stroke-dashoffset: 0;
+		transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+	}
+
+	.mark.is-waiting .shield__check {
+		stroke-dashoffset: 1;
+	}
+
+	/* --- Copy -------------------------------------------------------------- */
+	.label--light {
+		color: rgba(255, 255, 255, 0.5);
+	}
+
+	.privacy .h2 {
+		margin-top: 1rem;
+		max-width: 14ch;
+	}
+
+	.privacy .lead {
+		max-width: 34rem;
+		margin-top: 1.25rem;
+		color: rgba(255, 255, 255, 0.65);
+	}
+
+	.points {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		width: 100%;
+		max-width: 60rem;
+		margin-top: clamp(3rem, 5vw, 4.5rem);
+		border-top: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.point {
+		padding: 1.75rem 1.5rem 0;
+	}
+
+	.point + .point {
+		border-left: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.point__title {
+		font-family: var(--font-head);
+		font-weight: 500;
+		font-size: 1.1875rem;
+		letter-spacing: -0.01em;
+	}
+
+	.point__body {
+		margin-top: 0.4rem;
+		font-size: 0.9375rem;
+		color: rgba(255, 255, 255, 0.6);
+	}
+
+	@media (max-width: 760px) {
+		.points {
+			grid-template-columns: 1fr;
+		}
+
+		.point {
+			padding: 1.5rem 0;
+		}
+
+		.point + .point {
+			border-left: 0;
+			border-top: 1px solid rgba(255, 255, 255, 0.12);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ring,
+		.shield {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const mark = document.querySelector<HTMLElement>('[data-mark]');
+	if (mark && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		mark.classList.add('is-waiting');
+		const io = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				mark.classList.remove('is-waiting');
+				io.disconnect();
+			},
+			{ threshold: 0.6 },
+		);
+		io.observe(mark);
+	}
+</script>

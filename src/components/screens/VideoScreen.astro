@@ -1,0 +1,67 @@
+---
+/**
+ * Video review deck — the same card, layout and swipe behaviour as the photo
+ * deck, with playback controls inside the card. The video player is not yet
+ * designed in Figma. Footage: Mixkit free-licence clips in /public/videos.
+ */
+import '../../styles/deck.css';
+import back from '../../assets/app/back.svg';
+import undo from '../../assets/app/undo.svg';
+import glyphTrash from '../../assets/app/glyph-trash.svg';
+import glyphKeep from '../../assets/app/glyph-keep.svg';
+
+const videos = [
+	// Sorted largest first, as Glano presents them.
+	{ id: 'branch', name: 'IMG_3311.MOV', meta: '1.0 Gb   •   2160 x 3840', date: 'Jul 30, 2026', dur: '0:28' },
+	{ id: 'ocean', name: 'IMG_3550.MOV', meta: '780 Mb   •   2160 x 3840', date: 'Aug 21, 2026', dur: '0:21' },
+	{ id: 'frog', name: 'IMG_3982.MOV', meta: '486 Mb   •   2160 x 3840', date: 'Sep 14, 2026', dur: '0:13' },
+	{ id: 'sunset', name: 'IMG_4127.MOV', meta: '412 Mb   •   2160 x 3840', date: 'Oct 02, 2026', dur: '0:11' },
+];
+---
+
+<div class="scr" data-review-deck="video" data-start="1">
+	<img class="a" src={back.src} alt="" style="--x:16;--y:81;--sw:12" />
+	<p class="a c" style="--y:77;--f:24">Large videos</p>
+
+	<div class="a deck" style="--x:16;--y:133;--sw:370;--sh:641" data-deck>
+		{
+			videos.map((v, i) => (
+				<article class="dcard" data-card style={`--i:${i}`}>
+					<div class="dcard__media dcard__media--video">
+						<video muted playsinline loop preload="none" poster={`/videos/${v.id}.jpg`} data-src={`/videos/${v.id}.mp4`} />
+						<button type="button" class="vplay" data-play aria-label="Play video">
+							<svg class="i-play" viewBox="0 0 24 24">
+								<path d="M8 5.5v13l10.5-6.5z" fill="currentColor" />
+							</svg>
+							<svg class="i-pause" viewBox="0 0 24 24">
+								<path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor" />
+							</svg>
+						</button>
+						<div class="vscrub">
+							<p class="vscrub__time">
+								<span data-time>0:00</span>
+								<span>{v.dur}</span>
+							</p>
+							<div class="vscrub__track" data-track role="slider" tabindex="0" aria-label="Video position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+								<span class="vscrub__fill" />
+								<span class="vscrub__thumb" />
+							</div>
+						</div>
+						<img src={glyphTrash.src} alt="" class="glyph glyph--clear" />
+						<img src={glyphKeep.src} alt="" class="glyph glyph--keep" />
+					</div>
+					<p class="dcard__name">{v.name}</p>
+					<p class="dcard__meta">
+						<span>{v.meta}</span>
+						<span>{v.date}</span>
+					</p>
+				</article>
+			))
+		}
+	</div>
+
+	<button type="button" class="a deck-undo" style="--x:18;--y:803;--sw:52;--sh:46" data-undo aria-label="Undo">
+		<img src={undo.src} alt="" />
+	</button>
+	<p class="a c deck-count" style="--y:816;--f:18"><span data-count-now>1</span> of {videos.length}</p>
+</div>

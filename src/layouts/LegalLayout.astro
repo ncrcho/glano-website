@@ -1,0 +1,123 @@
+---
+/**
+ * Layout for legal pages (/privacy, /terms). Page text lives in the matching
+ * Markdown file in src/pages and is rendered unchanged inside .prose.
+ */
+import Layout from './Layout.astro';
+import Nav from '../components/sections/Nav.astro';
+import Footer from '../components/sections/Footer.astro';
+
+interface Props {
+	frontmatter: {
+		title: string;
+		description?: string;
+	};
+}
+
+const { title, description } = Astro.props.frontmatter;
+---
+
+<Layout title={`${title} — Glano`} description={description}>
+	<Nav />
+	<main id="main" class="legal">
+		<div class="container legal__inner">
+			<header class="legal__head">
+				<p class="label">Legal</p>
+				<h1 class="h2 legal__title">{title}</h1>
+			</header>
+			<article class="prose">
+				<slot />
+			</article>
+		</div>
+	</main>
+	<Footer showCta={false} />
+</Layout>
+
+<style>
+	.legal {
+		padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem) clamp(4.5rem, 3rem + 5vw, 7.5rem);
+	}
+
+	.legal__inner {
+		max-width: calc(46rem + var(--gutter) * 2);
+	}
+
+	.legal__head {
+		display: grid;
+		gap: 1rem;
+		padding-bottom: clamp(2rem, 4vw, 3rem);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.legal__title {
+		text-wrap: balance;
+	}
+
+	/* --- Policy text --------------------------------------------------------- */
+	.prose {
+		padding-top: clamp(2rem, 4vw, 3rem);
+		color: var(--ink-2);
+		font-size: 1.0625rem;
+		line-height: 1.7;
+	}
+
+	.prose :global(> * + *) {
+		margin-top: 1.1em;
+	}
+
+	.prose :global(h2) {
+		margin-top: 2.6em;
+		font-family: var(--font-head);
+		font-weight: 500;
+		font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.625rem);
+		line-height: 1.25;
+		letter-spacing: -0.015em;
+		color: var(--ink);
+	}
+
+	.prose :global(h2 + *) {
+		margin-top: 0.8em;
+	}
+
+	.prose :global(h3) {
+		margin-top: 2em;
+		font-family: var(--font-head);
+		font-weight: 500;
+		font-size: 1.1875rem;
+		color: var(--ink);
+	}
+
+	.prose :global(strong) {
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	.prose :global(ul),
+	.prose :global(ol) {
+		display: grid;
+		gap: 0.5em;
+		padding-left: 1.25em;
+	}
+
+	.prose :global(li::marker) {
+		color: var(--ink-3);
+	}
+
+	.prose :global(a) {
+		color: var(--ink);
+		text-decoration: underline;
+		text-decoration-color: var(--ink-3);
+		text-underline-offset: 3px;
+		transition: text-decoration-color 0.2s ease;
+	}
+
+	.prose :global(a:hover) {
+		text-decoration-color: var(--ink);
+	}
+
+	.prose :global(hr) {
+		margin-block: 2.5em;
+		border: 0;
+		border-top: 1px solid var(--line);
+	}
+</style>
