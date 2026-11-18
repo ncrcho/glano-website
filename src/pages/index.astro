@@ -5,9 +5,47 @@ import Hero from '../components/sections/Hero.astro';
 import Stage from '../components/sections/Stage.astro';
 import Privacy from '../components/sections/Privacy.astro';
 import Footer from '../components/sections/Footer.astro';
+import { SITE } from '../config';
+
+const site = Astro.site!.href.replace(/\/$/, '');
+const description =
+	'Glano finds duplicates, screenshots, similar photos and large videos, so you can free up iPhone storage in a few easy swipes. Everything stays on your iPhone.';
+
+// Structured data describing the organization, the website and the app.
+const jsonLd = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		'@id': `${site}/#organization`,
+		name: 'Glano',
+		url: `${site}/`,
+		logo: `${site}/apple-touch-icon.png`,
+		email: SITE.supportEmail,
+		contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', email: SITE.supportEmail },
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		'@id': `${site}/#website`,
+		name: 'Glano',
+		url: `${site}/`,
+		publisher: { '@id': `${site}/#organization` },
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'MobileApplication',
+		name: 'Glano',
+		operatingSystem: 'iOS',
+		applicationCategory: 'UtilitiesApplication',
+		description,
+		url: `${site}/`,
+		publisher: { '@id': `${site}/#organization` },
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+	},
+];
 ---
 
-<Layout>
+<Layout title="Glano — iPhone Photo Cleaner for Duplicates & Large Videos" description={description} jsonLd={jsonLd}>
 	<Nav />
 	<main id="main">
 		<Hero />

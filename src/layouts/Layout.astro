@@ -1,13 +1,20 @@
 ---
 import { Font } from 'astro:assets';
 import '../styles/global.css';
+import { SITE } from '../config';
 
 interface Props {
 	title?: string;
 	description?: string;
+	/** Exclude the page from search engines (e.g. the 404 page). */
+	noindex?: boolean;
+	/** Structured data (schema.org) objects rendered as JSON-LD. */
+	jsonLd?: Record<string, unknown>[];
 }
 
 const {
+	noindex = false,
+	jsonLd = [],
 	title = 'Glano — Your camera roll, simplified',
 	description = 'Glano finds duplicates, screenshots, similar photos and large videos, so you can free up iPhone storage in a few easy swipes. Everything stays on your iPhone.',
 } = Astro.props;
@@ -15,6 +22,7 @@ const {
 // Clean canonical URL: "/privacy.html" -> "/privacy", "/index.html" -> "/".
 const canonicalPath = Astro.url.pathname.replace(/(index)?\.html$/, '');
 const canonical = new URL(canonicalPath, Astro.site);
+const ogImage = new URL('/og-image.png', Astro.site);
 ---
 
 <!doctype html>
@@ -26,13 +34,29 @@ const canonical = new URL(canonicalPath, Astro.site);
 		<meta name="color-scheme" content="light" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={canonical} />
+		<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+		{!noindex && <link rel="canonical" href={canonical} />}
+		{SITE.googleSiteVerification && <meta name="google-site-verification" content={SITE.googleSiteVerification} />}
+
 		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Glano" />
+		<meta property="og:locale" content="en_US" />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Glano — Your camera roll, simplified. The Glano app on iPhone." />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+		{jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
 		<meta name="generator" content={Astro.generator} />
 		<Font cssVariable="--font-display" preload />
 	</head>

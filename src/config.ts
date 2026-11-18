@@ -6,6 +6,12 @@ export const SITE = {
 	privacyUrl: '/privacy',
 	termsUrl: '/terms',
 	supportUrl: 'mailto:support@glano.co',
+	supportEmail: 'support@glano.co',
+	/**
+	 * Google Search Console "HTML tag" verification code (the content="..."
+	 * value only). Leave empty if you verify with a DNS TXT record instead.
+	 */
+	googleSiteVerification: '',
 };
 
 /**

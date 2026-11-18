@@ -1,0 +1,43 @@
+---
+/**
+ * Not-found page. GitHub Pages serves 404.html (with a 404 status) for any
+ * unknown URL. Excluded from the sitemap and from search engines.
+ */
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/sections/Nav.astro';
+import Footer from '../components/sections/Footer.astro';
+---
+
+<Layout title="Page not found — Glano" description="This page doesn't exist." noindex>
+	<Nav />
+	<main id="main" class="nf">
+		<div class="container nf__inner">
+			<p class="label">404</p>
+			<h1 class="h2">This page doesn't exist.</h1>
+			<p class="lead">The link may be broken, or the page may have moved.</p>
+			<a href="/" class="btn nf__btn">Back to Glano</a>
+		</div>
+	</main>
+	<Footer showCta={false} />
+</Layout>
+
+<style>
+	.nf {
+		display: grid;
+		align-items: center;
+		/* Fill the screen so the footer sits at the bottom. */
+		min-height: calc(100svh - 64px - 97px);
+		padding-block: clamp(4rem, 3rem + 4vw, 6rem);
+	}
+
+	.nf__inner {
+		display: grid;
+		justify-items: start;
+		gap: 1.25rem;
+		max-width: calc(46rem + var(--gutter) * 2);
+	}
+
+	.nf__btn {
+		margin-top: 1rem;
+	}
+</style>
