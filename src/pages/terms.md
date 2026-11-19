@@ -1,7 +1,7 @@
 ---
 layout: ../layouts/LegalLayout.astro
 title: Terms of Use
-description: The terms that apply to your use of the Glano app.
+description: The terms that apply to your use of the Glano iPhone app, including photo library access, reviewing and deleting media, subscriptions and your responsibilities.
 ---
 
 **Last updated: November 18, 2026**
