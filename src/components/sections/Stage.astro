@@ -1,14 +1,15 @@
 ---
 /**
- * The Stage — one pinned phone, four chapters. The screen follows the chapter
- * in view, and every screen is interactive.
+ * The Stage — "How it works", told through scrolling.
+ * Desktop/tablet: a sticky phone beside four tall step sections; the screen
+ * follows the step in view. Mobile: each step is its own block with its own
+ * phone, in a natural vertical flow (no sticky phone covering the text).
  */
 import PhoneFrame from '../ui/PhoneFrame.astro';
 import HomeScreen from '../screens/HomeScreen.astro';
 import SwipeDemo from '../screens/SwipeDemo.astro';
 import VideoScreen from '../screens/VideoScreen.astro';
 import ReviewScreen from '../screens/ReviewScreen.astro';
-import { SHOW_PREVIEW_TAGS } from '../../config';
 
 const chapters = [
 	{ id: 'find', n: '01', name: 'Find' },
@@ -25,94 +26,104 @@ const categories = [
 ];
 ---
 
-<section class="stage" id="how" aria-labelledby="stage-title" data-stage>
+<section class="stage stage--half" id="how" aria-labelledby="stage-title" data-stage>
 	<div class="container">
 		<header class="stage__head">
-			<p class="label">How it works</p>
-			<h2 class="h2" id="stage-title">See it work. Right here.</h2>
+			<div class="stage__intro">
+				<p class="label">How it works</p>
+				<h2 class="h2" id="stage-title">See it work. Right here.</h2>
+			</div>
 			<p class="lead">This is the Glano experience. Scroll through it, and try it as you go.</p>
 		</header>
 
-		<div class="stage__grid">
-			<nav class="rail" aria-label="Chapters">
-				<ol role="list">
-					{
-						chapters.map((c, i) => (
-							<li>
-								<a href={`#ch-${c.id}`} class:list={['rail__item', { 'is-active': i === 0 }]} data-rail={c.id}>
-									<span class="mono">{c.n}</span>
-									{c.name}
-								</a>
-							</li>
-						))
-					}
-				</ol>
-			</nav>
-
+		<div class="stage__body">
+			<!-- Desktop / tablet: one sticky phone whose screen follows the step in view -->
 			<div class="device" data-device>
-				<div class="device__glow" aria-hidden="true"></div>
-				<PhoneFrame label="Interactive Glano demo">
-					<div class="screens">
-						<div class="screen is-active" data-screen="find"><HomeScreen counts /></div>
-						<div class="screen" data-screen="decide"><SwipeDemo /></div>
-						<div class="screen" data-screen="inspect"><VideoScreen /></div>
-						<div class="screen" data-screen="review"><ReviewScreen /></div>
+				<div class="device__inner">
+					<div class="device__glow" aria-hidden="true"></div>
+					<PhoneFrame label="Interactive Glano demo">
+						<div class="screens">
+							<div class="screen is-active" data-screen="find"><HomeScreen counts /></div>
+							<div class="screen" data-screen="decide"><SwipeDemo /></div>
+							<div class="screen" data-screen="inspect"><VideoScreen /></div>
+							<div class="screen" data-screen="review"><ReviewScreen /></div>
+						</div>
+					</PhoneFrame>
+					<div class="progress" aria-hidden="true">
+						{chapters.map((c, i) => <span class:list={['progress__seg', { 'is-active': i === 0 }]} data-progress={c.id} />)}
 					</div>
-				</PhoneFrame>
+				</div>
 			</div>
 
 			<div class="chapters">
-				<article class="chapter" id="ch-find" data-chapter="find">
-					<p class="chapter__n mono">01 · Find</p>
-					<h3 class="chapter__title">Find what's taking space.</h3>
-					<p class="chapter__body">
-						Glano scans your library on your iPhone and sorts the clutter into four groups, with counts and sizes, so
-						you know exactly where your storage went.
-					</p>
-					<ul class="cats" role="list">
-						{
-							categories.map((c) => (
-								<li>
-									<button type="button" class="cat" data-cat-btn={c.key}>
-										<span class="cat__name">
-											{c.name}
-										</span>
-										<span class="cat__note">{c.note}</span>
-									</button>
-								</li>
-							))
-						}
-					</ul>
+				<article class="chapter is-active" id="ch-find" data-chapter="find">
+					<div class="chapter__text">
+						<p class="chapter__n mono">01 · Find</p>
+						<h3 class="chapter__title">Find what's taking space.</h3>
+						<p class="chapter__body">
+							Glano scans your library on your iPhone and sorts the clutter into four groups, with counts and sizes, so
+							you know exactly where your storage went.
+						</p>
+						<ul class="cats" role="list">
+							{
+								categories.map((c) => (
+									<li>
+										<button type="button" class="cat" data-cat-btn={c.key}>
+											<span class="cat__name">{c.name}</span>
+											<span class="cat__note">{c.note}</span>
+										</button>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+					<div class="chapter__visual">
+						<PhoneFrame label="Glano home screen with storage found by category"><HomeScreen counts /></PhoneFrame>
+					</div>
 				</article>
 
 				<article class="chapter" id="ch-decide" data-chapter="decide">
-					<p class="chapter__n mono">02 · Decide</p>
-					<h3 class="chapter__title">One photo at a time. Your call.</h3>
-					<p class="chapter__body">
-						Swipe left to clear, right to keep. Every photo shows its file details, and Undo brings back the last one
-						in a tap.
-					</p>
-					<p class="hint mono">↔ Drag the photo left or right</p>
+					<div class="chapter__text">
+						<p class="chapter__n mono">02 · Decide</p>
+						<h3 class="chapter__title">One photo at a time. Your call.</h3>
+						<p class="chapter__body">
+							Swipe left to clear, right to keep. Every photo shows its file details, and Undo brings back the last one
+							in a tap.
+						</p>
+						<p class="hint mono">↔ Drag the photo left or right</p>
+					</div>
+					<div class="chapter__visual">
+						<PhoneFrame label="Interactive photo review: swipe to keep or clear"><SwipeDemo /></PhoneFrame>
+					</div>
 				</article>
 
 				<article class="chapter" id="ch-inspect" data-chapter="inspect">
-					<p class="chapter__n mono">03 · Inspect</p>
-					<h3 class="chapter__title">Biggest videos first.</h3>
-					<p class="chapter__body">
-						Glano sorts your large videos from biggest to smallest. Preview each one, scrub through it, then swipe to
-						keep or clear.
-					</p>
-					<p class="hint mono">↔ Drag the timeline, then swipe the card</p>
-					{SHOW_PREVIEW_TAGS && <p class="preview-tag">Preview design · video review</p>}
+					<div class="chapter__text">
+						<p class="chapter__n mono">03 · Inspect</p>
+						<h3 class="chapter__title">Biggest videos first.</h3>
+						<p class="chapter__body">
+							Glano sorts your large videos from biggest to smallest. Preview each one, scrub through it, then swipe to
+							keep or clear.
+						</p>
+						<p class="hint mono">↔ Drag the timeline, then swipe the card</p>
+					</div>
+					<div class="chapter__visual">
+						<PhoneFrame label="Interactive video review, largest videos first"><VideoScreen /></PhoneFrame>
+					</div>
 				</article>
 
 				<article class="chapter" id="ch-review" data-chapter="review">
-					<p class="chapter__n mono">04 · Review</p>
-					<h3 class="chapter__title">Nothing disappears by accident.</h3>
-					<p class="chapter__body">
-						Everything you clear is sorted into its category in Cleaned Items, with counts and sizes, so you can review
-						it before it's deleted for good.
-					</p>
+					<div class="chapter__text">
+						<p class="chapter__n mono">04 · Review</p>
+						<h3 class="chapter__title">Nothing disappears by accident.</h3>
+						<p class="chapter__body">
+							Everything you clear is sorted into its category in Cleaned Items, with counts and sizes, so you can review
+							it before it's deleted for good.
+						</p>
+					</div>
+					<div class="chapter__visual">
+						<PhoneFrame label="Cleaned Items, organized by category"><ReviewScreen /></PhoneFrame>
+					</div>
 				</article>
 			</div>
 		</div>
@@ -121,72 +132,50 @@ const categories = [
 
 <style>
 	.stage {
-		--P: min(320px, calc((100svh - 140px) * 0.46));
-		--top: max(84px, calc(50svh - var(--P) * 1.087));
-		padding-top: var(--section);
+		/* Phone width: fits the viewport height so the sticky phone is fully visible. */
+		--P: clamp(240px, calc((100svh - 190px) * 0.46), 310px);
+		--top: max(84px, calc(50svh - var(--P) * 1.087 + 10px));
+		padding-block: var(--section);
 		border-top: 1px solid var(--line);
+		overflow-x: clip;
 	}
 
+	/* --- Header -------------------------------------------------------------- */
 	.stage__head {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		align-items: end;
+		gap: 1.25rem clamp(2rem, 5vw, 5rem);
+	}
+
+	.stage__intro {
+		display: grid;
 		gap: 1rem;
-		max-width: 36rem;
 	}
 
-	.stage__grid {
+	.stage__head .lead {
+		max-width: 26rem;
+	}
+
+	/* --- Desktop / tablet: sticky phone + scrolling steps --------------------- */
+	.stage__body {
 		display: grid;
-		grid-template-columns: 150px var(--P) minmax(0, 1fr);
-		column-gap: clamp(2.5rem, 5vw, 6rem);
-		margin-top: clamp(2rem, 4vw, 4rem);
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(2.5rem, 6vw, 6rem);
+		margin-top: clamp(1rem, 2vw, 2rem);
 	}
 
-	/* --- Rail -------------------------------------------------------------- */
-	.rail {
-		position: sticky;
-		top: var(--top);
-		align-self: start;
-		padding-top: 1rem;
-	}
-
-	.rail ol {
-		display: grid;
-		gap: 0.25rem;
-		border-left: 1px solid var(--line);
-	}
-
-	.rail__item {
-		display: flex;
-		gap: 0.75rem;
-		margin-left: -1px;
-		padding: 0.5rem 0 0.5rem 1rem;
-		border-left: 1px solid transparent;
-		font-size: 0.9375rem;
-		color: var(--ink-3);
-		transition:
-			color 0.3s ease,
-			border-color 0.3s ease;
-	}
-
-	.rail__item .mono {
-		font-size: 0.75rem;
-		padding-top: 0.15rem;
-	}
-
-	.rail__item:hover {
-		color: var(--ink-2);
-	}
-
-	.rail__item.is-active {
-		color: var(--ink);
-		border-left-color: var(--ink);
-	}
-
-	/* --- Device ------------------------------------------------------------ */
 	.device {
+		position: relative;
+		z-index: 1;
+	}
+
+	.device__inner {
 		position: sticky;
 		top: var(--top);
-		align-self: start;
-		z-index: 2;
+		display: grid;
+		justify-items: center;
+		gap: 1.5rem;
 	}
 
 	.device :global(.phone) {
@@ -196,10 +185,30 @@ const categories = [
 
 	.device__glow {
 		position: absolute;
-		inset: -12% -40%;
+		inset: -6% -8% 2rem;
 		background: radial-gradient(closest-side, rgba(20, 18, 27, 0.06), transparent);
 		z-index: -1;
 		pointer-events: none;
+	}
+
+	.progress {
+		display: flex;
+		gap: 6px;
+	}
+
+	.progress__seg {
+		width: 22px;
+		height: 3px;
+		border-radius: 3px;
+		background: var(--line);
+		transition:
+			background-color 0.4s ease,
+			width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.progress__seg.is-active {
+		width: 34px;
+		background: var(--ink);
 	}
 
 	.screens {
@@ -236,21 +245,31 @@ const categories = [
 			visibility 0s;
 	}
 
-	/* --- Chapters ---------------------------------------------------------- */
+	/* Each step gets its own tall scroll section; the active one is in full ink. */
 	.chapter {
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: flex-start;
-		min-height: 100svh;
-		max-width: 26rem;
-		padding-block: 4rem;
-		opacity: 0.3;
+		align-items: center;
+		min-height: max(78svh, calc(var(--P) * 2.174 + 4rem));
+		opacity: 0.28;
 		transition: opacity 0.5s ease;
 	}
 
 	.chapter.is-active {
 		opacity: 1;
+	}
+
+	.chapter__text {
+		max-width: 28rem;
+		transform: translateY(12px);
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.chapter.is-active .chapter__text {
+		transform: none;
+	}
+
+	.chapter__visual {
+		display: none;
 	}
 
 	.chapter__n {
@@ -278,10 +297,6 @@ const categories = [
 		margin-top: 1.5rem;
 		font-size: 0.8125rem;
 		color: var(--ink-3);
-	}
-
-	.chapter .preview-tag {
-		margin-top: 1rem;
 	}
 
 	.cats {
@@ -315,9 +330,6 @@ const categories = [
 	}
 
 	.cat__name {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
 		font-family: var(--font-head);
 		font-weight: 500;
 		font-size: 1.0625rem;
@@ -328,94 +340,173 @@ const categories = [
 		color: var(--ink-3);
 	}
 
-	.pro {
-		padding: 0.05rem 0.45rem;
-		border: 1px solid var(--line);
-		border-radius: 999px;
-		font-family: var(--font-ui);
-		font-size: 0.6875rem;
-		font-weight: 600;
-		color: var(--ink-2);
+	/* --- Variation "half": phone on a half-bleed surface, steps on the right -- */
+	@media (min-width: 1024px) {
+		.stage--half .stage__body {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: clamp(3rem, 7vw, 7rem);
+			margin-top: clamp(2.5rem, 4vw, 4rem);
+		}
+
+		/* The surface runs from the screen's left edge to just past the phone
+		   column, and down to the end of the section. */
+		.stage--half .device::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			/* Stops short of the section's end, leaving a clear gap before the
+			   next (dark) section. */
+			bottom: calc(var(--section) * -0.4);
+			left: -100vw;
+			right: clamp(-3.5rem, -3.5vw, -1.5rem);
+			border-radius: 0 32px 32px 0;
+			background: #f5f4f0;
+			z-index: -1;
+		}
+
+		.stage--half .device__glow {
+			display: none;
+		}
+
+		.stage--half .device__inner {
+			padding-block: 1.5rem;
+		}
+
+		.stage--half .chapter__text {
+			padding-left: clamp(0rem, 1vw, 1rem);
+		}
 	}
 
-	/* --- Mobile: phone pinned on top, chapters scroll beneath -------------- */
-	@media (max-width: 900px) {
+	/* --- Tablet --------------------------------------------------------------- */
+	@media (max-width: 1023px) {
 		.stage {
-			--P: min(230px, calc((100svh - 64px - 300px) * 0.46));
-			--top: 64px;
+			--P: clamp(230px, calc((100svh - 190px) * 0.46), 260px);
 		}
 
-		.stage__grid {
-			grid-template-columns: minmax(0, 1fr);
-		}
-
-		.rail {
-			display: none;
-		}
-
-		.device {
-			display: flex;
-			justify-content: center;
-			padding: 0.75rem 0 1.5rem;
-			background: linear-gradient(var(--paper) 90%, rgba(255, 254, 251, 0));
-		}
-
-		.device__glow {
-			display: none;
-		}
-
-		.chapter {
-			min-height: 72svh;
-			max-width: none;
-			justify-content: flex-start;
-			padding-block: 1rem 3rem;
+		.stage__body {
+			gap: 2.5rem;
 		}
 
 		.cat__note {
 			display: none;
 		}
 	}
+
+	/* --- Mobile: one block per step, each with its own phone ------------------ */
+	@media (max-width: 759px) {
+		.stage {
+			--P: min(250px, 66vw);
+		}
+
+		.stage__head {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.stage__body {
+			display: block;
+			margin-top: 0;
+		}
+
+		.device {
+			display: none;
+		}
+
+		.chapter {
+			display: grid;
+			gap: 2rem;
+			min-height: 0;
+			padding-top: 3.5rem;
+			opacity: 1;
+		}
+
+		.chapter + .chapter {
+			margin-top: 1.5rem;
+			border-top: 1px solid var(--line);
+		}
+
+		.chapter__text {
+			max-width: none;
+			transform: none;
+		}
+
+		.chapter__visual {
+			position: relative;
+			display: flex;
+			justify-content: center;
+		}
+
+		.chapter__visual::before {
+			content: '';
+			position: absolute;
+			inset: -4% 0;
+			background: radial-gradient(closest-side, rgba(20, 18, 27, 0.05), transparent);
+			z-index: -1;
+			pointer-events: none;
+		}
+
+		.chapter__visual :global(.phone) {
+			--w: var(--P);
+		}
+
+		.chapter__title {
+			font-size: 1.75rem;
+		}
+	}
 </style>
 
 <script>
 	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const mobile = matchMedia('(max-width: 759px)');
 	const stage = document.querySelector<HTMLElement>('[data-stage]')!;
-	const device = stage.querySelector<HTMLElement>('[data-device]')!;
 	const chapters = Array.from(stage.querySelectorAll<HTMLElement>('[data-chapter]'));
-	const screens = Array.from(stage.querySelectorAll<HTMLElement>('[data-screen]'));
-	const rail = Array.from(stage.querySelectorAll<HTMLElement>('[data-rail]'));
+	const screens = Array.from(stage.querySelectorAll<HTMLElement>('.device [data-screen]'));
+	const progress = Array.from(stage.querySelectorAll<HTMLElement>('[data-progress]'));
+	// An element is "shown" when no ancestor is display:none (desktop vs mobile phones).
+	const shown = (el: HTMLElement) => el.getClientRects().length > 0;
 
-	/* ---------- Chapter tracking ---------- */
+	/* ---------- Scroll-based step detection ---------- */
 	let active = 'find';
+	let inView = false;
 	const setActive = (id: string) => {
 		if (id === active) return;
 		active = id;
 		screens.forEach((s) => s.classList.toggle('is-active', s.dataset.screen === id));
 		chapters.forEach((c) => c.classList.toggle('is-active', c.dataset.chapter === id));
-		rail.forEach((r) => r.classList.toggle('is-active', r.dataset.rail === id));
+		progress.forEach((p) => p.classList.toggle('is-active', p.dataset.progress === id));
 		stage.dispatchEvent(new CustomEvent('chapter', { detail: id }));
 	};
-	chapters[0].classList.add('is-active');
 
 	let ticking = false;
+	const detect = () => {
+		ticking = false;
+		const vh = innerHeight;
+		const s = stage.getBoundingClientRect();
+		const visible = s.top < vh * 0.75 && s.bottom > vh * 0.25;
+		if (visible !== inView) {
+			inView = visible;
+			stage.dispatchEvent(new CustomEvent('visibility', { detail: inView }));
+		}
+		// A step becomes active once its section crosses the activation line.
+		const line = vh * (mobile.matches ? 0.6 : 0.5);
+		let current = chapters[0].dataset.chapter!;
+		for (const c of chapters) if (c.getBoundingClientRect().top < line) current = c.dataset.chapter!;
+		setActive(current);
+	};
 	const onScroll = () => {
 		if (ticking) return;
 		ticking = true;
-		requestAnimationFrame(() => {
-			ticking = false;
-			const mobile = innerWidth <= 900;
-			const line = mobile ? device.getBoundingClientRect().bottom + 40 : innerHeight * 0.55;
-			let current = chapters[0].dataset.chapter!;
-			for (const c of chapters) if (c.getBoundingClientRect().top < line) current = c.dataset.chapter!;
-			setActive(current);
-		});
+		requestAnimationFrame(detect);
 	};
 	addEventListener('scroll', onScroll, { passive: true });
 	addEventListener('resize', onScroll);
-	onScroll();
+	mobile.addEventListener('change', () => {
+		stage.querySelectorAll('video').forEach((v) => v.pause());
+		onScroll();
+	});
+	detect();
 
 	/* ---------- 01 Find: category highlight ---------- */
-	const rows = Array.from(stage.querySelectorAll<HTMLElement>('[data-screen="find"] [data-cat]'));
+	const rows = Array.from(stage.querySelectorAll<HTMLElement>('[data-cat]'));
 	const catBtns = Array.from(stage.querySelectorAll<HTMLElement>('[data-cat-btn]'));
 	const highlight = (key: string | null) => {
 		rows.forEach((r) => r.classList.toggle('is-hi', r.dataset.cat === key));
@@ -436,10 +527,10 @@ const categories = [
 		b.addEventListener('mouseleave', off);
 		b.addEventListener('blur', off);
 	});
-	// Gentle auto-cycle while the chapter is in view and nobody is hovering.
+	// Gentle auto-cycle while the step is active and nobody is hovering.
 	let cycle = 0;
 	setInterval(() => {
-		if (reduce || hovering || active !== 'find') return;
+		if (reduce || hovering || !inView || active !== 'find') return;
 		highlight(catBtns[cycle % catBtns.length].dataset.catBtn!);
 		cycle++;
 	}, 1800);
@@ -591,12 +682,18 @@ const categories = [
 		};
 	}
 
-	const photoDeck = createDeck(stage.querySelector<HTMLElement>('[data-review-deck="photo"]')!);
-	const videoDeck = createDeck(stage.querySelector<HTMLElement>('[data-review-deck="video"]')!);
+	// Every phone instance (desktop sticky phone + mobile per-step phones) is
+	// interactive; actions always target the instance that is currently shown.
+	const decks = Array.from(stage.querySelectorAll<HTMLElement>('[data-review-deck]')).map((root) => ({
+		kind: root.dataset.reviewDeck as 'photo' | 'video',
+		deck: createDeck(root),
+	}));
+	const shownDeck = (kind: 'photo' | 'video') => decks.find((d) => d.kind === kind && shown(d.deck.root))?.deck;
+	const videoDecks = decks.filter((d) => d.kind === 'video').map((d) => d.deck);
 
 	addEventListener('keydown', (e) => {
-		if ((e.target as HTMLElement).closest('input, textarea, [role="slider"]')) return;
-		const d = active === 'decide' ? photoDeck : active === 'inspect' ? videoDeck : null;
+		if (!inView || (e.target as HTMLElement).closest('input, textarea, [role="slider"]')) return;
+		const d = active === 'decide' ? shownDeck('photo') : active === 'inspect' ? shownDeck('video') : undefined;
 		if (!d) return;
 		if (e.key === 'ArrowLeft') d.decide(-1);
 		if (e.key === 'ArrowRight') d.decide(1);
@@ -606,6 +703,7 @@ const categories = [
 	const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 	const videoOf = (card?: HTMLElement) => card?.querySelector<HTMLVideoElement>('video') ?? null;
 	const durOf = (v: HTMLVideoElement) => (Number.isFinite(v.duration) && v.duration > 0 ? v.duration : 1);
+	const pauseAll = () => stage.querySelectorAll('video').forEach((v) => v.pause());
 	const paint = (card: HTMLElement, p: number) => {
 		p = Math.min(1, Math.max(0, p));
 		card.style.setProperty('--p', p.toFixed(4));
@@ -620,79 +718,84 @@ const categories = [
 		}
 	};
 	const playTop = () => {
-		const v = videoOf(videoDeck.top());
+		const v = videoOf(shownDeck('video')?.top());
 		if (!v || reduce) return;
+		pauseAll();
 		ensureSrc(v);
 		v.play().catch(() => {});
 	};
 
 	let scrubbing = false;
-	let raf = 0;
 	let videoHinted = false;
 	let hintRaf = 0;
-	videoDeck.cards.forEach((card) => {
-		const v = videoOf(card)!;
-		const frame = () => {
-			if (!scrubbing) paint(card, v.currentTime / durOf(v));
-			if (!v.paused) raf = requestAnimationFrame(frame);
-		};
-		v.addEventListener('play', () => {
-			card.classList.add('is-playing');
-			cancelAnimationFrame(raf);
-			raf = requestAnimationFrame(frame);
-		});
-		v.addEventListener('pause', () => card.classList.remove('is-playing'));
-		v.addEventListener('seeked', () => !scrubbing && paint(card, v.currentTime / durOf(v)));
-		card.querySelector('[data-play]')!.addEventListener('click', () => {
-			ensureSrc(v);
-			if (v.paused) v.play().catch(() => {});
-			else v.pause();
+	type SeekCard = HTMLElement & { seek?: (p: number) => void };
+
+	videoDecks.forEach((vdeck) => {
+		vdeck.cards.forEach((card) => {
+			const v = videoOf(card)!;
+			let raf = 0;
+			const frame = () => {
+				if (!scrubbing) paint(card, v.currentTime / durOf(v));
+				if (!v.paused) raf = requestAnimationFrame(frame);
+			};
+			v.addEventListener('play', () => {
+				card.classList.add('is-playing');
+				cancelAnimationFrame(raf);
+				raf = requestAnimationFrame(frame);
+			});
+			v.addEventListener('pause', () => card.classList.remove('is-playing'));
+			v.addEventListener('seeked', () => !scrubbing && paint(card, v.currentTime / durOf(v)));
+			card.querySelector('[data-play]')!.addEventListener('click', () => {
+				ensureSrc(v);
+				if (v.paused) v.play().catch(() => {});
+				else v.pause();
+			});
+
+			const track = card.querySelector<HTMLElement>('[data-track]')!;
+			let wasPlaying = false;
+			const seek = (p: number) => {
+				p = Math.min(1, Math.max(0, p));
+				paint(card, p);
+				const t = p * durOf(v);
+				if (scrubbing && 'fastSeek' in v) v.fastSeek(t);
+				else v.currentTime = t;
+			};
+			const fromPointer = (e: PointerEvent) => {
+				const r = track.getBoundingClientRect();
+				seek((e.clientX - r.left) / r.width);
+			};
+			track.addEventListener('pointerdown', (e) => {
+				cancelVideoHint();
+				ensureSrc(v);
+				scrubbing = true;
+				wasPlaying = !v.paused;
+				v.pause();
+				track.setPointerCapture(e.pointerId);
+				fromPointer(e);
+			});
+			track.addEventListener('pointermove', (e) => scrubbing && fromPointer(e));
+			const end = () => {
+				if (!scrubbing) return;
+				scrubbing = false;
+				v.currentTime = (Number(card.style.getPropertyValue('--p')) || 0) * durOf(v);
+				if (wasPlaying) v.play().catch(() => {});
+			};
+			track.addEventListener('pointerup', end);
+			track.addEventListener('pointercancel', end);
+			track.addEventListener('keydown', (e) => {
+				if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+				e.preventDefault();
+				ensureSrc(v);
+				seek((v.currentTime + (e.key === 'ArrowRight' ? 1 : -1)) / durOf(v));
+			});
+			(card as SeekCard).seek = seek;
 		});
 
-		const track = card.querySelector<HTMLElement>('[data-track]')!;
-		let wasPlaying = false;
-		const seek = (p: number) => {
-			p = Math.min(1, Math.max(0, p));
-			paint(card, p);
-			const t = p * durOf(v);
-			if (scrubbing && 'fastSeek' in v) v.fastSeek(t);
-			else v.currentTime = t;
-		};
-		const fromPointer = (e: PointerEvent) => {
-			const r = track.getBoundingClientRect();
-			seek((e.clientX - r.left) / r.width);
-		};
-		track.addEventListener('pointerdown', (e) => {
-			cancelVideoHint();
-			ensureSrc(v);
-			scrubbing = true;
-			wasPlaying = !v.paused;
-			v.pause();
-			track.setPointerCapture(e.pointerId);
-			fromPointer(e);
+		// Only the top card plays; everything underneath stays paused.
+		vdeck.onTop((top) => {
+			vdeck.cards.forEach((c) => c !== top && videoOf(c)?.pause());
+			if (top && inView && active === 'inspect' && videoHinted && shown(vdeck.root)) playTop();
 		});
-		track.addEventListener('pointermove', (e) => scrubbing && fromPointer(e));
-		const end = () => {
-			if (!scrubbing) return;
-			scrubbing = false;
-			v.currentTime = (Number(card.style.getPropertyValue('--p')) || 0) * durOf(v);
-			if (wasPlaying) v.play().catch(() => {});
-		};
-		track.addEventListener('pointerup', end);
-		track.addEventListener('pointercancel', end);
-		track.addEventListener('keydown', (e) => {
-			if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-			e.preventDefault();
-			ensureSrc(v);
-			seek((v.currentTime + (e.key === 'ArrowRight' ? 1 : -1)) / durOf(v));
-		});
-		(card as HTMLElement & { seek?: (p: number) => void }).seek = seek;
-	});
-
-	// Only the top card plays; everything underneath stays paused.
-	videoDeck.onTop((top) => {
-		videoDeck.cards.forEach((c) => c !== top && videoOf(c)?.pause());
-		if (top && active === 'inspect' && videoHinted) playTop();
 	});
 
 	// One-time timeline demo on the first visit: sweep forward, ease back, play.
@@ -700,14 +803,14 @@ const categories = [
 		if (!hintRaf) return;
 		cancelAnimationFrame(hintRaf);
 		hintRaf = 0;
-		videoDeck.cards.forEach((c) => c.classList.remove('is-hinting'));
+		stage.querySelectorAll('.is-hinting').forEach((c) => c.classList.remove('is-hinting'));
 	}
 	const playVideoHint = () => {
 		videoHinted = true;
-		const card = videoDeck.top();
+		const card = shownDeck('video')?.top() as SeekCard | undefined;
 		const v = videoOf(card);
-		if (!card || !v || reduce) return;
-		const seek = (card as HTMLElement & { seek: (p: number) => void }).seek;
+		if (!card || !v || !card.seek || reduce) return;
+		const seek = card.seek;
 		const run = () => {
 			card.classList.add('is-hinting');
 			const keys = [
@@ -723,7 +826,7 @@ const categories = [
 					hintRaf = 0;
 					card.classList.remove('is-hinting');
 					seek(keys[2].p);
-					if (active === 'inspect') playTop();
+					if (active === 'inspect' && inView) playTop();
 					return;
 				}
 				const k = el < keys[1].t ? 0 : 1;
@@ -739,11 +842,11 @@ const categories = [
 		else v.addEventListener('loadedmetadata', run, { once: true });
 	};
 
-	// Start loading the first clip shortly before the chapter is reached.
+	// Start loading the first clip shortly before the section is reached.
 	new IntersectionObserver(
 		([entry], obs) => {
 			if (!entry.isIntersecting) return;
-			const v = videoOf(videoDeck.top());
+			const v = videoOf(shownDeck('video')?.top());
 			if (v) {
 				ensureSrc(v);
 				v.load();
@@ -751,21 +854,33 @@ const categories = [
 			obs.disconnect();
 		},
 		{ rootMargin: '100% 0px' },
-	).observe(stage.querySelector('#ch-inspect')!);
+	).observe(stage);
 
+	/* ---------- Step changes ---------- */
 	let photoHinted = false;
-	stage.addEventListener('chapter', ((e: CustomEvent) => {
-		if (e.detail === 'decide' && !photoHinted) {
+	const enter = (id: string) => {
+		if (id === 'decide' && !photoHinted) {
 			photoHinted = true;
-			photoDeck.nudge();
+			shownDeck('photo')?.nudge();
 		}
-		if (e.detail === 'inspect') {
+		if (id === 'inspect') {
 			if (!videoHinted) playVideoHint();
 			else playTop();
 		} else {
 			cancelVideoHint();
-			videoDeck.cards.forEach((c) => videoOf(c)?.pause());
+			pauseAll();
+		}
+	};
+	stage.addEventListener('chapter', ((e: CustomEvent) => inView && enter(e.detail)) as EventListener);
+	// Pause when the section scrolls away; pick up the current step when it returns.
+	stage.addEventListener('visibility', ((e: CustomEvent) => {
+		if (e.detail) enter(active);
+		else {
+			cancelVideoHint();
+			pauseAll();
 		}
 	}) as EventListener);
 
+	// The page may load with the section already on screen (e.g. via /#how).
+	if (inView) enter(active);
 </script>

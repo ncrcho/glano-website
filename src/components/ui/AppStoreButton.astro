@@ -6,9 +6,16 @@ interface Props {
 	class?: string;
 }
 const { href = SITE.appStoreUrl, class: className } = Astro.props;
+// Until the App Store listing exists, show the button without a link.
+const Tag = href ? 'a' : 'span';
 ---
 
-<a href={href} class:list={['appstore', className]} aria-label="Download Glano on the App Store">
+<Tag
+	href={href || undefined}
+	class:list={['appstore', className, { 'appstore--soon': !href }]}
+	aria-label={href ? 'Download Glano on the App Store' : 'Glano on the App Store, coming soon'}
+	title={href ? undefined : 'Coming soon to the App Store'}
+>
 	<svg width="20" height="24" viewBox="0 0 17 20" aria-hidden="true" fill="currentColor">
 		<path
 			d="M14.04 10.63c-.02-2.3 1.88-3.41 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM11.75 3.88c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.11 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"
@@ -18,7 +25,7 @@ const { href = SITE.appStoreUrl, class: className } = Astro.props;
 		<span class="appstore__small">Download on the</span>
 		<span class="appstore__big">App Store</span>
 	</span>
-</a>
+</Tag>
 
 <style>
 	.appstore {
@@ -36,6 +43,12 @@ const { href = SITE.appStoreUrl, class: className } = Astro.props;
 
 	.appstore:hover {
 		opacity: 0.85;
+	}
+
+	.appstore--soon,
+	.appstore--soon:hover {
+		cursor: default;
+		opacity: 1;
 	}
 
 	.appstore svg {

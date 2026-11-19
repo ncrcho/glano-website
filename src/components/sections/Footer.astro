@@ -1,5 +1,5 @@
 ---
-import AppStoreButton from '../ui/AppStoreButton.astro';
+import CloseCta from './CloseCta.astro';
 import wordmark from '../../assets/app/wordmark.svg';
 import { SITE } from '../../config';
 
@@ -16,16 +16,7 @@ const links = [
 ];
 ---
 
-{
-	showCta && (
-		<section class="close" id="download" aria-labelledby="close-title">
-			<div class="container close__inner">
-				<h2 class="display close__title" id="close-title">Get your storage back.</h2>
-				<AppStoreButton />
-			</div>
-		</section>
-	)
-}
+{showCta && <CloseCta />}
 
 <footer class="footer">
 	<div class="container footer__inner">
@@ -46,23 +37,6 @@ const links = [
 </footer>
 
 <style>
-	.close {
-		padding-block: clamp(4rem, 3rem + 4vw, 7rem) clamp(5rem, 3rem + 6vw, 8rem);
-		border-top: 1px solid var(--line);
-		overflow: clip;
-	}
-
-	.close__inner {
-		display: grid;
-		justify-items: center;
-		gap: 2.25rem;
-		text-align: center;
-	}
-
-	.close__title {
-		max-width: 12ch;
-	}
-
 	.footer {
 		border-top: 1px solid var(--line);
 	}

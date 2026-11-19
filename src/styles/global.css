@@ -178,22 +178,6 @@ a {
 	opacity: 0.85;
 }
 
-/* Marks proposed UI that is not yet in the Figma app design. */
-.preview-tag {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	height: 1.5rem;
-	padding: 0 0.6rem;
-	border: 1px dashed var(--ink-3);
-	border-radius: 999px;
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	letter-spacing: 0.02em;
-	color: var(--ink-2);
-	white-space: nowrap;
-}
-
 .mono {
 	font-family: var(--font-mono);
 	font-variant-numeric: tabular-nums;
